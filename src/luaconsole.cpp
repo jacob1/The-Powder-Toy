@@ -495,7 +495,7 @@ int luacon_element_getproperty(const char * key, int * format, unsigned int * mo
 		offset = offsetof(Element, Name);
 		*format = 2;
 	}
-	else if (!strcmp(key, "color") || !strcmp(key, "colour"))
+	else if (!strcmp(key, "colour") || !strcmp(key, "colour"))
 	{
 		offset = offsetof(Element, Colour);
 		*format = 4;

@@ -80,7 +80,7 @@ it will get a green box around it. To unfavorite it, ctrl+shift+right click
 it instead. Any recently used elements, even from past sessions, also will 
 appear in the menu, but they don't stay forever.  If you click the MORE 
 button, a new menu will appear with more options. HUD's are customizable using 
-the HUD2 button. The FIND button colors whatever element you have selected 
+the HUD2 button. The FIND button colours whatever element you have selected 
 red, and dims everything else. There's also a way to double or triple 
 highlight things in green and blue at the same time, if you click the button 
 more times. FND2 changes the way find is displayed, also alternatively you can 
@@ -285,7 +285,7 @@ and did some fixes to FIND and BALL.
 Version 5.0: http://min.us/lbh6DDTJzdNFU3
 Added automatic and manual heat displays. In automatic heat display, 
 the highest temp is pink and the lowest is dark blue. In Manual, 
-you can decide which temp is displayed as the hottest color and which is 
+you can decide which temp is displayed as the hottest colour and which is 
 the lowest, and everything in between will be based off that. 
 I also added powdered portals and virus/cure, and updated to the latest 
 source to get rid of the update box.
@@ -302,7 +302,7 @@ enable with a shortcut), load, bubble, reset_temp, and reset_pressure(works
 with the same parameters reset_velocity does). There are three new lua 
 commands: get_pressure, get_gravity, and maxframes(sets the number of frames 
 ANIM can have when created, 1-256). Also, render_ui uses the old cmode 
-pictures in color.Note: the button keys to change display modes, blob & heat 
+pictures in colour.Note: the button keys to change display modes, blob & heat 
 gradient display, portal effects (Simon forgot the wifi/portal lines), and 
 new icons all got into the official version. Not much of this code was 
 actually written by me, a lot of it was taken from github after Simon deleted 
@@ -331,7 +331,7 @@ stamps/saves. Press up in the console and then enter to load an example.
 
 Version 9: http://min.us/muN92vQxC
 Fix loading some saves and fixed crash with HUD. Removed update button 
-permanently and updated to newer source. Also, decoration color is now drawn 
+permanently and updated to newer source. Also, decoration colour is now drawn 
 on stamps in the stamp browser. 2 new quickoptions: Newtonian gravity and 
 ambient heat. Custom HUDs. To change one, click the HUD2 button in the second 
 favorites menu and different options will come up. You can change all 4 of 
@@ -414,10 +414,10 @@ to the old menu, the favorites menu is always drawn on bottom when using that.
 Ability to make custom lua graphics functions. Fix glitch in HUD (life 
 wouldn't show up). You can scroll through comments on saves, but only 10 at 
 most are able to show up. User ID's are now drawn on comments. You can write 
-in color now. Use Ctrl  + one of these letters: w (white), g (grey), o 
+in colour now. Use Ctrl  + one of these letters: w (white), g (grey), o 
 (orange), r (red), l (red-orange), b (blue), and t (light blue). Colors can 
 go in comments, tags, and save names and be seen by all tpt users. They can't 
-go in signs or local saves names (colors are removed). Update to 79.2 source.
+go in signs or local saves names (colours are removed). Update to 79.2 source.
 
 Version 16 - 6/14/12
 VOID and PVOD can be set to only eat their ctype (or only not eat it if their 
@@ -439,11 +439,11 @@ moving solids causing stacking and BHOL being created. Update to latest source
 again (still 80.4) which fixes some other bugs.
 
 Version 16.2 - 6/18/12
-Fixed saving saves publicly, remove ability to create colored text.
+Fixed saving saves publicly, remove ability to create coloured text.
 
 Version 16.3 - 6/25/12
 Make Some lua console shortcuts less annoying. Fix compression during fusion 
-and with moving sponge. Fix moderator name colors, also, your name is yellow 
+and with moving sponge. Fix moderator name colours, also, your name is yellow 
 and save creators is red. Update to latest source.
 
 Version 17.0 - 7/5/12
@@ -482,7 +482,7 @@ Version 18.1 8/7/12
 Fix crash when saving invalid elements (that you shouldn't have anyway). Add 
 an icon to the deco menu and element search ui. Disable reversible pipe on non 
 mod saves. Improvements to the deco menu to make it feel more like the editor, 
-fix middle click to get decocolor inside of it. Fix graphics function crash. 
+fix middle click to get decocolour inside of it. Fix graphics function crash. 
 Fixes to PWHT so that it works and saves better. Fix instantly powered 
 electronics not saving. Combine PROP & PROP2. To use old prop, flood fill with 
 Ctrl + Shift. Fix TRON. GEL and SPNG can absorb water from elements and leaves 
@@ -549,7 +549,7 @@ open the save in the save preview, deleting the comment. Make an error while
 sending a comment (like posting too frequently) not delete the comment. Fix not 
 being able to remove convo notifications. Fix VIRS+water equalization. Fix any 
 differences with SWCH and other electronics from tpt that was breaking saves. 
-Some minor simulation updates from tpt++. Add back color presets to deco 
+Some minor simulation updates from tpt++. Add back colour presets to deco 
 editor, fix some minor bugs with the editor. Add in updater! Thanks to mniip 
 for the space on his server. This readme probably won't update with future 
 updates, but you can still see it on the mod's thread and on github.
@@ -605,7 +605,7 @@ Version 21.3 2/15/13
 Increase zoom to default tpt++ size. Fix crash when one of the first 7 
 comments is REALLY long. Fix crash when loading deleted saves with comments. 
 Fix negative votes display bug and next page arrow showing when it shouldn't. 
-Fix setting deco color with tpt.set_property. DEST won't move clone elements 
+Fix setting deco colour with tpt.set_property. DEST won't move clone elements 
 anymore. Don't load edge mode in saves anymore. Memory leak fixes. Allow 
 saving of new elements, since official version 86 is out now.
 
@@ -872,7 +872,7 @@ SWCH. Prevent possible crash loop when trying to restart after a crash. Reset
 stickmen acceleration on respawn (fixes stickmen controllers). Ctrl+f
 shortcut doesn't activate when holding shift or alt. Fix not being able to set
 negative ctypes with PROP. Fix print() crash. yyyy-mm-dd date format option.
-Fix deco sample sometimes sampling the wrong color. Tons of simulation fixes
+Fix deco sample sometimes sampling the wrong colour. Tons of simulation fixes
 and updates from tpt++/jacksonmj. Fix some saves not loading ctype properly.
 
 Version 30.3 1/9/15
@@ -938,7 +938,7 @@ TODO: '>' means currently being worked on/added next
 >Support multiple logins / "remember me" setting
 Redo fav menu ...
 Do something about the massively repeated drawing code in Simulation.cpp
-make open ui more colorful like tpt++, also fix cut off description in save uploading ui
+make open ui more colourful like tpt++, also fix cut off description in save uploading ui
 make buttons look clicked when pressed, moving mouse away will not do clicks, like tpt++ (redo interface)
 loading circle in save browser?
 redo some sign things and remove regex

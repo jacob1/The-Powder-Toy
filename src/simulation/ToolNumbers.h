@@ -23,7 +23,7 @@ struct toolType
 {
 	std::string name;
 	std::string identifier;
-	ARGBColour color;
+	ARGBColour colour;
 	std::string descs;
 };
 typedef struct toolType toolType;
@@ -56,7 +56,7 @@ struct decoType
 {
 	std::string name;
 	std::string identifier;
-	ARGBColour color;
+	ARGBColour colour;
 	std::string descs;
 };
 typedef struct decoType decoType;
@@ -70,8 +70,8 @@ static decoType decoTypes[] =
 	{"MUL", "DEFAULT_DECOR_MUL",	COLPACK(0x323232), "Color blending: Multiply."},
 	{"DIV", "DEFAULT_DECOR_DIV",	COLPACK(0x323232), "Color blending: Divide."},
 	{"SMDG", "DEFAULT_DECOR_SMDG",	COLPACK(0x00FF00), "Smudge tool, blends surrounding deco together."},
-	{"LIGH", "DEFAULT_DECOR_LIGH",	COLPACK(0xDDDDDD), "Lighten deco color."},
-	{"DARK", "DEFAULT_DECOR_DARK",	COLPACK(0x111111), "Darken deco color."}
+	{"LIGH", "DEFAULT_DECOR_LIGH",	COLPACK(0xDDDDDD), "Lighten deco colour."},
+	{"DARK", "DEFAULT_DECOR_DARK",	COLPACK(0x111111), "Darken deco colour."}
 };
 
 

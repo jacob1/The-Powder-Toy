@@ -104,11 +104,11 @@ public:
 	void CreatePropBox(int x1, int y1, int x2, int y2, PropertyType propType, PropertyValue propValue, size_t propOffset);
 	int FloodProp(int x, int y, PropertyType propType, PropertyValue propValue, size_t propOffset);
 
-	void CreateDeco(int x, int y, int tool, ARGBColour color);
-	void CreateDecoBrush(int x, int y, int tool, ARGBColour color, Brush* brush);
-	void CreateDecoLine(int x1, int y1, int x2, int y2, int tool, ARGBColour color, Brush* brush);
-	void CreateDecoBox(int x1, int y1, int x2, int y2, int tool, ARGBColour color);
-	void FloodDeco(int x, int y, ARGBColour color, ARGBColour replace);
+	void CreateDeco(int x, int y, int tool, ARGBColour colour);
+	void CreateDecoBrush(int x, int y, int tool, ARGBColour colour, Brush* brush);
+	void CreateDecoLine(int x1, int y1, int x2, int y2, int tool, ARGBColour colour, Brush* brush);
+	void CreateDecoBox(int x1, int y1, int x2, int y2, int tool, ARGBColour colour);
+	void FloodDeco(int x, int y, ARGBColour colour, ARGBColour replace);
 
 	// movement, functions implemented in Movement.cpp
 	unsigned char can_move[PT_NUM][PT_NUM];

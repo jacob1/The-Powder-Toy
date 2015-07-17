@@ -244,7 +244,7 @@ int VideoBuffer::DrawText(int x, int y, std::string s, int r, int g, int b, int 
 		case '\x02':
 			DrawLine(x, y-1, x, y+FONT_H-2, 255, 255, 255, 255);
 			break;
-		// old color codes, expect a single character after them
+		// old colour codes, expect a single character after them
 		case '\b':
 			if (s.length() < i+1)
 				break;

@@ -25,7 +25,7 @@ protected:
 	unsigned int numClicks, clickPosition;
 	bool autosizeX, autosizeY;
 
-	std::string CleanText(std::string dirty, bool ascii, bool color, bool newlines);
+	std::string CleanText(std::string dirty, bool ascii, bool colour, bool newlines);
 	void UpdateDisplayText(bool updateCursor = false, bool firstClick = false);
 	void MoveCursor(unsigned int *cursor, int amount);
 	virtual bool ShowCursor() { return false; }

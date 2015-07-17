@@ -18,7 +18,7 @@
  *
  * It doesn't support alpha, because the new interface code only has
  * what we minimally need. Only the default option is really tested. Use
- * PIXCONV to convert from the pixel format into an RGB color and PIXPACK
+ * PIXCONV to convert from the pixel format into an RGB colour and PIXPACK
  * to convert from RGB format into pixel format.
  */
 

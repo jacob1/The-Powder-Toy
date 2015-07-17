@@ -111,7 +111,7 @@ void BIZR_init_element(ELEMENT_INIT_FUNC_ARGS)
 	elem->DefaultProperties.temp = R_TEMP+0.0f	+273.15f;
 	elem->HeatConduct = 29;
 	elem->Latent = 0;
-	elem->Description = "Bizarre... contradicts the normal state changes. Paints other elements with its deco color.";
+	elem->Description = "Bizarre... contradicts the normal state changes. Paints other elements with its deco colour.";
 
 	elem->State = ST_LIQUID;
 	elem->Properties = TYPE_LIQUID;

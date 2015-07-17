@@ -96,7 +96,7 @@ void sdl_blit(int x, int y, int w, int h, pixel *src, int pitch);
 
 void drawblob(pixel *vid, int x, int y, unsigned char cr, unsigned char cg, unsigned char cb);
 
-void draw_tool_button(pixel *vid_buf, int x, int y, pixel color, std::string name);
+void draw_tool_button(pixel *vid_buf, int x, int y, pixel colour, std::string name);
 int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* currents);
 
 int DrawMenus(pixel *vid_buf, int hover, int mouseY);

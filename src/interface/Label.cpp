@@ -48,15 +48,15 @@ std::string Label::GetText()
 	return fixed;
 }
 
-// Strips stuff from a string. Can strip all non ascii characters (excluding color and newlines), strip all color, or strip all newlines
-std::string Label::CleanText(std::string dirty, bool ascii, bool color, bool newlines)
+// Strips stuff from a string. Can strip all non ascii characters (excluding colour and newlines), strip all colour, or strip all newlines
+std::string Label::CleanText(std::string dirty, bool ascii, bool colour, bool newlines)
 {
 	for (int i = 0; i < dirty.size(); i++)
 	{
 		switch(dirty[i])
 		{
 		case '\b':
-			if (color)
+			if (colour)
 			{
 				dirty.erase(i, 2);
 				i--;
@@ -65,14 +65,14 @@ std::string Label::CleanText(std::string dirty, bool ascii, bool color, bool new
 				i++;
 			break;
 		case '\x0E':
-			if (color)
+			if (colour)
 			{
 				dirty.erase(i, 1);
 				i--;
 			}
 			break;
 		case '\x0F':
-			if (color)
+			if (colour)
 			{
 				dirty.erase(i, 4);
 				i--;

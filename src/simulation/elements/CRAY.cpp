@@ -69,7 +69,7 @@ int CRAY_update(UPDATE_FUNC_ARGS)
 					if (!(r&0xFF))
 						continue;
 					if ((r&0xFF)==PT_SPRK && parts[r>>8].life==3) { //spark found, start creating
-						ARGBColour colored = COLARGB(0, 0, 0, 0);
+						ARGBColour coloured = COLARGB(0, 0, 0, 0);
 						int destroy = parts[r>>8].ctype==PT_PSCN;
 						int nostop = parts[r>>8].ctype==PT_INST;
 						int createSpark = (parts[r>>8].ctype==PT_INWR);
@@ -81,7 +81,7 @@ int CRAY_update(UPDATE_FUNC_ARGS)
 								break;
 							}
 							r = pmap[y+nyi+nyy][x+nxi+nxx];
-							if (!sim->IsWallBlocking(x+nxi+nxx, y+nyi+nyy, parts[i].ctype) && (!pmap[y+nyi+nyy][x+nxi+nxx] || createSpark)) { // create, also set color if it has passed through FILT
+							if (!sim->IsWallBlocking(x+nxi+nxx, y+nyi+nyy, parts[i].ctype) && (!pmap[y+nyi+nyy][x+nxi+nxx] || createSpark)) { // create, also set colour if it has passed through FILT
 								int nr;
 								// TODO: change these create_parts
 								if (parts[i].ctype == PT_LIFE)
@@ -89,21 +89,21 @@ int CRAY_update(UPDATE_FUNC_ARGS)
 								else
 									nr = create_part(-1, x+nxi+nxx, y+nyi+nyy, parts[i].ctype);
 								if (nr!=-1) {
-									if (colored)
-										parts[nr].dcolour = colored;
+									if (coloured)
+										parts[nr].dcolour = coloured;
 									parts[nr].temp = parts[i].temp;
 									if(!--partsRemaining)
 										docontinue = 0;
 								}
-							} else if ((r&0xFF)==PT_FILT) { // get color if passed through FILT
+							} else if ((r&0xFF)==PT_FILT) { // get colour if passed through FILT
 								if (parts[r>>8].dcolour == COLRGB(0, 0, 0))
-									colored = COLRGB(0, 0, 0);
+									coloured = COLRGB(0, 0, 0);
 								else if (parts[r>>8].tmp == 0)
 								{
-									colored = wavelengthToDecoColour(getWavelengths(&parts[r>>8]));
+									coloured = wavelengthToDecoColour(getWavelengths(&parts[r>>8]));
 								}
-								else if (colored == COLRGB(0, 0, 0))
-									colored = COLARGB(0, 0, 0, 0);
+								else if (coloured == COLRGB(0, 0, 0))
+									coloured = COLARGB(0, 0, 0, 0);
 								parts[r>>8].life = 4;
 							} else if ((r&0xFF) == PT_CRAY || nostop) {
 								docontinue = 1;

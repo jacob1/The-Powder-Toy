@@ -50,7 +50,7 @@
 * Version 80.2 Build 176
       o Minor EXOT fix
 * Version 80.1 Build 175
-      o EXOT uses heat view's rainbow color scale
+      o EXOT uses heat view's rainbow colour scale
 * Version 80.1 Build 174
       o No change - not in beta anymore
 * Version 80.0 Beta Build 173
@@ -69,7 +69,7 @@
 * Version 79.4 Beta Build 169
       o Fix ptsave parsing if there is no '#'
       o Download progress bar for save opening
-      o Soap bubbles easily formed, also their links inherit soap's decoration color
+      o Soap bubbles easily formed, also their links inherit soap's decoration colour
       o Don't show disabled elements in the search
       o Fix saltwater boiling temp typo
 * Version 79.3 Beta Build 168
@@ -234,7 +234,7 @@
       o Lots and lots of fixes
 *  Version 64.3
       o Decoration editor tool menu, with lighten and darken tools
-      o Can type in decoration editor color boxes for specific RGB values, hit enter after typing a number to confirm
+      o Can type in decoration editor colour boxes for specific RGB values, hit enter after typing a number to confirm
       o SOAP removes decoration, opposite of BIZR
       o Water equalization, turn on in options menu, or with tpt.watertest()
       o BUBW changes to be more realistic, can explode
@@ -244,9 +244,9 @@
       o Can opt in to receive beta updates
       o QRTZ scatters photons.
       o New Tool, PROP, edit properties easily without console.
-      o FILT has modes with .tmp (0,1,2). 0 is convert (old method). 1 will filter (only close color can pass). 2 is add color
+      o FILT has modes with .tmp (0,1,2). 0 is convert (old method). 1 will filter (only close colour can pass). 2 is add colour
       o 'Sign out' button in the login menu, instead of submitting blank data
-      o Fancy colored powders, hit 'n' to toggle
+      o Fancy coloured powders, hit 'n' to toggle
 *  Version 61.2
       o Fixed a Lua mouse event bug
       o Can set decoration layer "dcolour" property

@@ -10,7 +10,7 @@ local versionstring = "0.83.1"
 
 --CHANGES:
 --Lots of Fixes
---More colors!
+--More colours!
 --ESC key will unfocus, then minimize chat
 --Changes from jacob, including: Support jacobsMod, keyrepeat
 --Support replace mode
@@ -212,7 +212,7 @@ new = function(x,y,w,h,r,g,b)
 	local box=ui_base.new()
 	box.x=x box.y=y box.w=w box.h=h box.x2=x+w box.y2=y+h
 	box.r=r or 255 box.g=g or 255 box.b=b or 255
-	function box:setcolor(r,g,b) self.r=r self.g=g self.b=b end
+	function box:setcolour(r,g,b) self.r=r self.g=g self.b=b end
 	function box:setbackground(r,g,b,a) self.br=r self.bg=g self.bb=b self.ba=a end
 	box.drawbox=true
 	box.drawbackground=false
@@ -230,7 +230,7 @@ new = function(text,x,y,r,g,b)
 	local txt = ui_base.new()
 	txt.text = text
 	txt.x=x or 0 txt.y=y or 0 txt.r=r or 255 txt.g=g or 255 txt.b=b or 255
-	function txt:setcolor(r,g,b) self.r=r self.g=g self.b=b end
+	function txt:setcolour(r,g,b) self.r=r self.g=g self.b=b end
 	txt:drawadd(function(self,x,y) tpt.drawtext(x or self.x,y or self.y,self.text,self.r,self.g,self.b) end)
 	txt:moveadd(function(self,x,y)
 		if x then self.x=self.x+x end
@@ -329,8 +329,8 @@ new=function(x,y,w,h)
 	intext:moveadd(function(self,x,y) self.t:onmove(x,y) end)
 	function intext:setfocus(focus)
 		self.focus=focus
-		if focus then tpt.set_shortcuts(0) self:setcolor(255,255,0)
-		else tpt.set_shortcuts(1) self:setcolor(255,255,255) end
+		if focus then tpt.set_shortcuts(0) self:setcolour(255,255,0)
+		else tpt.set_shortcuts(1) self:setcolour(255,255,255) end
 	end
 	function intext:movecursor(amt)
 		self.cursor = self.cursor+amt
@@ -460,9 +460,9 @@ new = function(x,y,w,h,f,text)
 			self.almostselected=false
 			tpt.fillrect(self.x,self.y,self.w,self.h)
 			local tr=self.t.r local tg=self.t.g local tb=self.t.b
-			b.t:setcolor(0,0,0)
+			b.t:setcolour(0,0,0)
 			b.t:draw()
-			b.t:setcolor(tr,tg,tb)
+			b.t:setcolour(tr,tg,tb)
 		else
 			b.t:draw()
 		end
@@ -832,7 +832,7 @@ local function getViewModes()
 	for k,v in pairs(ren.renderModes()) do
 		t[2] = t[2]+(renModes[v] or 0)
 	end
-	t[3] = ren.colorMode()
+	t[3] = ren.colourMode()
 	return t
 end
 
@@ -1148,7 +1148,7 @@ local dataCmds = {
 			i=i*2
 		end
 		ren.renderModes(t)
-		ren.colorMode(colM)
+		ren.colourMode(colM)
 	end,
 	--Selected deco colour (4 bytes)
 	[65] = function()

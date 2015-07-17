@@ -242,7 +242,7 @@ new = function(x,y,w,h,r,g,b)
 	local box=ui_base.new()
 	box.x=x box.y=y box.w=w box.h=h box.x2=x+w box.y2=y+h
 	box.r=r or 255 box.g=g or 255 box.b=b or 255
-	function box:setcolor(r,g,b) self.r=r self.g=g self.b=b end
+	function box:setcolour(r,g,b) self.r=r self.g=g self.b=b end
 	function box:setbackground(r,g,b,a) self.br=r self.bg=g self.bb=b self.ba=a end
 	box.drawbox=true
 	box.drawbackground=false
@@ -269,7 +269,7 @@ new = function(text,x,y,r,g,b)
 	local txt = ui_base.new()
 	txt.text = text
 	txt.x=x or 0 txt.y=y or 0 txt.r=r or 255 txt.g=g or 255 txt.b=b or 255
-	function txt:setcolor(r,g,b) self.r=r self.g=g self.b=b end
+	function txt:setcolour(r,g,b) self.r=r self.g=g self.b=b end
 	txt:drawadd(function(self,x,y) tpt.drawtext(x or self.x,y or self.y,self.text,self.r,self.g,self.b) end)
 	txt:moveadd(function(self,x,y)
 		if x then self.x=self.x+x end
@@ -395,9 +395,9 @@ new = function(x,y,w,h,f,text)
 			self.almostselected=false
 			tpt.fillrect(self.x,self.y,self.w,self.h)
 			local tr=self.t.r local tg=self.t.g local tb=self.t.b
-			b.t:setcolor(0,0,0)
+			b.t:setcolour(0,0,0)
 			b.t:draw()
-			b.t:setcolor(tr,tg,tb)
+			b.t:setcolour(tr,tg,tb)
 		else
 			if tpt.mousex>=self.x and tpt.mousex<=self.x2 and tpt.mousey>=self.y and tpt.mousey<=self.y2 then
 				self.drawbackground=true
@@ -734,7 +734,7 @@ tooltip = ui_tooltip.new(0,1,250,"")
 
 --Some API functions you can call from other scripts
 --put 'using_manager=MANAGER ~= nil' or similar in your scripts, using_manager will be true if the manager is active
---Print a message to the manager console, can be colored
+--Print a message to the manager console, can be coloured
 function MANAGER.print(msg,...)
 	mainwindow.menuconsole:addstr(msg,...)
 end
@@ -881,14 +881,14 @@ local lua_letters= {{{2,2,2,7},{2,7,4,7},{6,7,6,11},{6,11,8,11},{8,7,8,11},{10,1
 	{{2,3,2,13},{2,14,7,14},{4,3,4,12},{4,12,7,12},{7,3,7,12},{9,3,12,3},{9,3,9,14},{10,8,11,8},{12,3,12,14},}}
 local function smallstep()
 	gfx.drawRect(sidebutton.x, sidebutton.y+1, sidebutton.w+1, sidebutton.h+1,200,200,200)
-	local color=WHITE
+	local colour=WHITE
 	if not MANAGER.hidden then
 		step()
 		gfx.fillRect(sidebutton.x, sidebutton.y+1, sidebutton.w+1, sidebutton.h+1)
-		color=BLACK
+		colour=BLACK
 	end
 	for i,dline in ipairs(lua_letters[ICON]) do
-		tpt.drawline(dline[1]+sidebutton.x,dline[2]+sidebutton.y,dline[3]+sidebutton.x,dline[4]+sidebutton.y,color[1],color[2],color[3])
+		tpt.drawline(dline[1]+sidebutton.x,dline[2]+sidebutton.y,dline[3]+sidebutton.x,dline[4]+sidebutton.y,colour[1],colour[2],colour[3])
 	end
 	if jacobsmod_old_menu_check then
 		if tpt.oldmenu()==0 and sidebutton.y > 150 then sidebutton:onmove(0, -256) elseif tpt.oldmenu()==1 and sidebutton.y < 150 then sidebutton:onmove(0, 256) end
@@ -1173,7 +1173,7 @@ local function gen_buttons_online()
 		if not updatetable[1] then return end
 		if tonumber(updatetable[1].version) > scriptversion then
 			local updatebutton = ui_button.new(278,127,40,10,ui_button.doupdate,"UPDATE")
-			updatebutton.t:setcolor(25,255,25)
+			updatebutton.t:setcolour(25,255,25)
 			mainwindow:add(updatebutton)
 			MANAGER.print("A script manager update is available! Click UPDATE",25,255,55)
 			MANAGER.print(updatetable[1].changelog,25,255,55)

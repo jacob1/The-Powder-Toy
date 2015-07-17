@@ -1163,7 +1163,7 @@ int main(int argc, char *argv[])
 	colour_mode = COLOUR_DEFAULT;
 	init_display_modes();
 	TRON_init_graphics();
-	init_color_boxes();
+	init_colour_boxes();
 
 	for (i=1; i<argc; i++)
 	{

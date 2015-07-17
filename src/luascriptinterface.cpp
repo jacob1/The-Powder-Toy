@@ -858,9 +858,9 @@ int simulation_decoBrush(lua_State * l)
 	if (brush < 0 || brush >= BRUSH_NUM)
 		return luaL_error(l, "Invalid brush id '%d'", brush);
 
-	unsigned int color = COLARGB(a, r, g, b);
+	unsigned int colour = COLARGB(a, r, g, b);
 	Brush* tempBrush = new Brush(Point(rx, ry), brush);
-	globalSim->CreateDecoBrush(x, y, tool, color, tempBrush);
+	globalSim->CreateDecoBrush(x, y, tool, colour, tempBrush);
 	delete tempBrush;
 	return 0;
 }
@@ -884,9 +884,9 @@ int simulation_decoLine(lua_State * l)
 	if (brush < 0 || brush >= BRUSH_NUM)
 		return luaL_error(l, "Invalid brush id '%d'", brush);
 
-	unsigned int color = COLARGB(a, r, g, b);
+	unsigned int colour = COLARGB(a, r, g, b);
 	Brush* tempBrush = new Brush(Point(rx, ry), brush);
-	globalSim->CreateDecoLine(x1, y1, x2, y2, tool, color, tempBrush);
+	globalSim->CreateDecoLine(x1, y1, x2, y2, tool, colour, tempBrush);
 	delete tempBrush;
 	return 0;
 }
@@ -905,8 +905,8 @@ int simulation_decoBox(lua_State * l)
 	if (tool < 0 || tool >= DECOCOUNT)
 			return luaL_error(l, "Invalid tool id '%d'", tool);
 
-	unsigned int color = COLARGB(a, r, g, b);
-	globalSim->CreateDecoBox(x1, y1, x2, y2, tool, color);
+	unsigned int colour = COLARGB(a, r, g, b);
+	globalSim->CreateDecoBox(x1, y1, x2, y2, tool, colour);
 	return 0;
 }
 
@@ -919,10 +919,10 @@ int simulation_floodDeco(lua_State * l)
 	int b = luaL_optint(l,5,255);
 	int a = luaL_optint(l,6,255);
 
-	PropertyValue color;
-	color.UInteger = COLARGB(a, r, g, b);
-	globalSim->FloodProp(x, y, UInteger, color, offsetof(particle, dcolour));
-	//globalSim->FloodDeco(x, y, -1, color);
+	PropertyValue colour;
+	colour.UInteger = COLARGB(a, r, g, b);
+	globalSim->FloodProp(x, y, UInteger, colour, offsetof(particle, dcolour));
+	//globalSim->FloodDeco(x, y, -1, colour);
 	return 0;
 }
 
@@ -931,11 +931,11 @@ int simulation_decoColor(lua_State * l)
 	int acount = lua_gettop(l);
 	if (acount == 0)
 	{
-		lua_pushnumber(l, decocolor);
+		lua_pushnumber(l, decocolour);
 		return 1;
 	}
 	else if (acount == 1)
-		decocolor = (unsigned int)luaL_optnumber(l, 1, 0xFFFF0000);
+		decocolour = (unsigned int)luaL_optnumber(l, 1, 0xFFFF0000);
 	else
 	{
 		int r, g, b, a;
@@ -949,9 +949,9 @@ int simulation_decoColor(lua_State * l)
 		if (b < 0) b = 0; else if (b > 255) b = 255;
 		if (a < 0) a = 0; else if (a > 255) a = 255;
 
-		decocolor =  COLARGB(a, r, g, b);
+		decocolour =  COLARGB(a, r, g, b);
 	}
-	currR = PIXR(decocolor), currG = PIXG(decocolor), currB = PIXB(decocolor), currA = decocolor>>24;
+	currR = PIXR(decocolour), currG = PIXG(decocolour), currB = PIXB(decocolour), currA = decocolour>>24;
 	RGB_to_HSV(currR, currG, currB, &currH, &currS, &currV);
 	return 0;
 }
@@ -1492,8 +1492,8 @@ void initRendererAPI(lua_State * l)
 	struct luaL_Reg rendererAPIMethods [] = {
 		{"renderModes", renderer_renderModes},
 		{"displayModes", renderer_displayModes},
-		{"colorMode", renderer_colorMode},
-		{"colourMode", renderer_colorMode},
+		{"colourMode", renderer_colourMode},
+		{"colourMode", renderer_colourMode},
 		{"decorations", renderer_decorations},
 		{"grid", renderer_grid},
 		{"debugHUD", renderer_debugHUD},
@@ -1624,7 +1624,7 @@ int renderer_displayModes(lua_State * l)
 	}
 }
 
-int renderer_colorMode(lua_State * l)
+int renderer_colourMode(lua_State * l)
 {
 	int args = lua_gettop(l);
 	if(args)
@@ -2084,12 +2084,12 @@ int graphics_fillCircle(lua_State * l)
 
 int graphics_getColors(lua_State * l)
 {
-	unsigned int color = lua_tointeger(l, 1);
+	unsigned int colour = lua_tointeger(l, 1);
 
-	int a = color >> 24;
-	int r = (color >> 16)&0xFF;
-	int g = (color >> 8)&0xFF;
-	int b = color&0xFF;
+	int a = colour >> 24;
+	int r = (colour >> 16)&0xFF;
+	int g = (colour >> 8)&0xFF;
+	int b = colour&0xFF;
 
 	lua_pushinteger(l, r);
 	lua_pushinteger(l, g);
@@ -2106,9 +2106,9 @@ int graphics_getHexColor(lua_State * l)
 	int a = 0;
 	if (lua_gettop(l) >= 4)
 		a = lua_tointeger(l, 4);
-	unsigned int color = (a<<24) + (r<<16) + (g<<8) + b;
+	unsigned int colour = (a<<24) + (r<<16) + (g<<8) + b;
 
-	lua_pushinteger(l, color);
+	lua_pushinteger(l, colour);
 	return 1;
 }
 
