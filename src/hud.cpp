@@ -83,7 +83,7 @@ void SetRightHudText(int x, int y)
 				}
 				else if (currentHud[50] && currentHud[11] && (cr&0xFF)==PT_FILT)
 				{
-					const char* filtModes[] = { "set color", "AND", "OR", "subtract color", "red shift", "blue shift", "no effect", "XOR", "NOT", "PHOT scatter" };
+					const char* filtModes[] = { "set colour", "AND", "OR", "subtract colour", "red shift", "blue shift", "no effect", "XOR", "NOT", "PHOT scatter" };
 					if (parts[cr>>8].tmp>=0 && parts[cr>>8].tmp<=9)
 						sprintf(nametext, "FILT (%s), ", filtModes[parts[cr>>8].tmp]);
 					else
@@ -158,7 +158,7 @@ void SetRightHudText(int x, int y)
 			}
 			if (currentHud[46])
 			{
-				sprintf(tempstring,"Dcolor: 0x%.8X, ",parts[cr>>8].dcolour);
+				sprintf(tempstring,"Dcolour: 0x%.8X, ",parts[cr>>8].dcolour);
 				strappend(heattext,tempstring);
 			}
 			if (currentHud[47])
@@ -417,7 +417,7 @@ void DrawHud(int introTextAlpha, int qTipAlpha)
 	wavelength_gfx = 0;
 }
 
-//draws the photon colors in the HUD
+//draws the photon colours in the HUD
 void DrawPhotonWavelengths(pixel *vid, int x, int y, int h, int wl)
 {
 	int i,cr,cg,cb,j;

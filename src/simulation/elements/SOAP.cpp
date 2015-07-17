@@ -281,7 +281,7 @@ void SOAP_init_element(ELEMENT_INIT_FUNC_ARGS)
 	elem->DefaultProperties.temp = R_TEMP-2.0f	+273.15f;
 	elem->HeatConduct = 29;
 	elem->Latent = 0;
-	elem->Description = "Soap. Creates bubbles, washes off deco color, and cures virus.";
+	elem->Description = "Soap. Creates bubbles, washes off deco colour, and cures virus.";
 
 	elem->State = ST_LIQUID;
 	elem->Properties = TYPE_LIQUID|PROP_NEUTPENETRATE|PROP_LIFE_DEC;

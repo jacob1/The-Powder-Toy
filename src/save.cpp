@@ -913,7 +913,7 @@ void *build_save(int *size, int orig_x0, int orig_y0, int orig_w, int orig_h, un
 	//Copy parts data
 	/* Field descriptor format:
 	|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|		0		|
-	|				|				|	  pavg		|	tmp[3+4]	|		tmp2[2]	|		tmp2	|	ctype[2]	|		vy		|		vx		|	dcolor		|	ctype[1]	|		tmp[2]	|		tmp[1]	|		life[2]	|		life[1]	|	temp dbl len|
+	|				|				|	  pavg		|	tmp[3+4]	|		tmp2[2]	|		tmp2	|	ctype[2]	|		vy		|		vx		|	dcolour		|	ctype[1]	|		tmp[2]	|		tmp[1]	|		life[2]	|		life[1]	|	temp dbl len|
 	life[2] means a second byte (for a 16 bit field) if life[1] is present
 	*/
 	partsData = (unsigned char*)malloc(NPART * (sizeof(particle)+1));
@@ -1266,7 +1266,7 @@ void *build_save(int *size, int orig_x0, int orig_y0, int orig_w, int orig_h, un
 	bson_append_bool(&b, "aheat_enable", aheat_enable);
 	bson_append_int(&b, "render_mode", render_mode);
 	bson_append_int(&b, "display_mode", display_mode);
-	bson_append_int(&b, "color_mode", colour_mode);
+	bson_append_int(&b, "colour_mode", colour_mode);
 	bson_append_int(&b, "Jacob1's_Mod", MOD_SAVE_VERSION);
 	bson_append_int(&b, "edgeMode", edgeMode);
 	bson_append_int(&b, "compatible_with", 8); //unused?
@@ -1536,7 +1536,7 @@ int parse_save_OPS(void *save, int size, int replace, int x0, int y0, unsigned c
 								if (!strcmp(bson_iterator_key(&signiter), "text") && bson_iterator_type(&signiter)==BSON_STRING)
 								{
 									strncpy(signs[i].text, bson_iterator_string(&signiter), 255);
-									//clean_text(signs[i].text, -1);  //disabling this since I love colors :D
+									//clean_text(signs[i].text, -1);  //disabling this since I love colours :D
 								}
 								else if (!strcmp(bson_iterator_key(&signiter), "justification") && bson_iterator_type(&signiter)==BSON_INT)
 								{
@@ -1901,7 +1901,7 @@ int parse_save_OPS(void *save, int size, int replace, int x0, int y0, unsigned c
 				fprintf(stderr, "Wrong type for %s\n", bson_iterator_key(&iter));
 			}
 		}
-		else if (!strcmp(bson_iterator_key(&iter), "color_mode") && replace == 2)
+		else if (!strcmp(bson_iterator_key(&iter), "colour_mode") && replace == 2)
 		{
 			if(bson_iterator_type(&iter)==BSON_INT)
 			{

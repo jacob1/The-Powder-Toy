@@ -71,7 +71,7 @@ int simulation_stickman(lua_State * l);
 void initRendererAPI(lua_State * l);
 int renderer_renderModes(lua_State * l);
 int renderer_displayModes(lua_State * l);
-int renderer_colorMode(lua_State * l);
+int renderer_colourMode(lua_State * l);
 int renderer_decorations(lua_State * l);
 int renderer_grid(lua_State * l);
 int renderer_debugHUD(lua_State * l);

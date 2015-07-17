@@ -432,23 +432,23 @@ void drawblob(pixel *vid, int x, int y, unsigned char cr, unsigned char cg, unsi
 	blendpixel(vid, x-1, y+1, cr, cg, cb, 64);
 }
 
-//draws the background and correctly colored text for each button
-void draw_tool_button(pixel *vid_buf, int x, int y, pixel color, std::string name)
+//draws the background and correctly coloured text for each button
+void draw_tool_button(pixel *vid_buf, int x, int y, pixel colour, std::string name)
 {
 #ifdef OpenGL
-	fillrect(vid_buf, x, y, 28, 16, PIXR(color), PIXG(color), PIXB(color), 255);
+	fillrect(vid_buf, x, y, 28, 16, PIXR(colour), PIXG(colour), PIXB(colour), 255);
 #else
 	for (int j = 1; j < 15; j++)
 	{
 		for (int i = 1; i < 27; i++)
 		{
-			vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+			vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 		}
 	}
 #endif
 
 	int textColor = 0;
-	if (PIXB(color) + 3*PIXG(color) + 2*PIXR(color) < 544)
+	if (PIXB(colour) + 3*PIXG(colour) + 2*PIXR(colour) < 544)
 		textColor = 255;
 	drawtext(vid_buf, x+14-textwidth(name.c_str())/2, y+4, name.c_str(), textColor, textColor, textColor, 255);
 }
@@ -478,33 +478,33 @@ int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* current)
 	else if (current->GetType() == WALL_TOOL)
 	{
 		int ds = wallTypes[current->GetID()].drawstyle;
-		pixel color = PIXPACK(wallTypes[current->GetID()].colour);
+		pixel colour = PIXPACK(wallTypes[current->GetID()].colour);
 		pixel glowColor = PIXPACK(wallTypes[current->GetID()].eglow);
 		
 		if (ds==1)
 		{
 			for (j=1; j<15; j+=2)
 				for (i=1+(1&(j>>1)); i<27; i+=2)
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 		}
 		else if (ds==2)
 		{
 			for (j=1; j<15; j+=2)
 				for (i=1; i<27; i+=2)
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 		}
 		else if (ds==3)
 		{
 			for (j=1; j<15; j++)
 				for (i=1; i<27; i++)
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 		}
 		else if (ds==4)
 		{
 			for (j=1; j<15; j++)
 				for (i=1; i<27; i++)
 					if(i%CELL == j%CELL)
-						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 					else if  (i%CELL == (j%CELL)+1 || (i%CELL == 0 && j%CELL == CELL-1))
 						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = glowColor;
 					else 
@@ -520,7 +520,7 @@ int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* current)
 				{
 					if (!(i%2) && !(j%2))
 					{
-						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 					}
 					else
 					{
@@ -536,14 +536,14 @@ int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* current)
 				{
 					if (!(i&j&1))
 					{
-						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 					}
 				}
 				for (; i<27; i++)
 				{
 					if (i&j&1)
 					{
-						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+						vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 					}
 				}
 			}
@@ -567,14 +567,14 @@ int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* current)
 			{
 				for (i=1+(1&(j>>1)); i<13; i+=2)
 				{
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 				}
 			}
 			for (j=1; j<15; j++)
 			{
 				for (i=14; i<27; i++)
 				{
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 				}
 			}
 
@@ -623,7 +623,7 @@ int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* current)
 			}
 			break;
 		default:
-			draw_tool_button(vid_buf, x, y, color, "");
+			draw_tool_button(vid_buf, x, y, colour, "");
 		}
 	}
 	else if (current->GetType() == TOOL_TOOL)
@@ -641,47 +641,47 @@ int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* current)
 			drawtext(vid_buf, x+9, y+3, "\xA0", 255, 255, 255, 255);
 		}
 		else
-			draw_tool_button(vid_buf, x, y, PIXPACK(toolTypes[current->GetID()].color), toolTypes[current->GetID()].name.c_str());
+			draw_tool_button(vid_buf, x, y, PIXPACK(toolTypes[current->GetID()].colour), toolTypes[current->GetID()].name.c_str());
 	}
 	else if (current->GetType() == DECO_TOOL)
 	{
-		pixel color = PIXPACK(decoTypes[current->GetID()].color);
+		pixel colour = PIXPACK(decoTypes[current->GetID()].colour);
 		for (j=1; j<15; j++)
 		{
 			for (i=1; i<27; i++)
 			{
 				if (current->GetID() == DECO_LIGHTEN)
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXRGB(PIXR(color)-10*j, PIXG(color)-10*j, PIXB(color)-10*j);
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXRGB(PIXR(colour)-10*j, PIXG(colour)-10*j, PIXB(colour)-10*j);
 				else if (current->GetID() == DECO_DARKEN)
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXRGB(PIXR(color)+10*j, PIXG(color)+10*j, PIXB(color)+10*j);
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXRGB(PIXR(colour)+10*j, PIXG(colour)+10*j, PIXB(colour)+10*j);
 				else if (current->GetID() == DECO_SMUDGE)
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXRGB(PIXR(color), PIXG(color)-5*i, PIXB(color)+5*i);
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXRGB(PIXR(colour), PIXG(colour)-5*i, PIXB(colour)+5*i);
 				else if (current->GetID() == DECO_DRAW || current->GetID() == DECO_CLEAR)
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXPACK(decocolor);
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = PIXPACK(decocolour);
 				else
-					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = color;
+					vid_buf[(XRES+BARSIZE)*(y+j)+(x+i)] = colour;
 			}
 		}
 
 		if (current->GetID() == DECO_CLEAR)
 		{
-			color = PIXRGB((COLR(decocolor)+127)%256, (COLG(decocolor)+127)%256, (COLB(decocolor)+127)%256);
+			colour = PIXRGB((COLR(decocolour)+127)%256, (COLG(decocolour)+127)%256, (COLB(decocolour)+127)%256);
 			for (j=4; j<12; j++)
 			{
-				vid_buf[(XRES+BARSIZE)*(y+j)+(x+j+6)] = color;
-				vid_buf[(XRES+BARSIZE)*(y+j)+(x+j+7)] = color;
-				vid_buf[(XRES+BARSIZE)*(y+j)+(x-j+21)] = color;
-				vid_buf[(XRES+BARSIZE)*(y+j)+(x-j+22)] = color;
+				vid_buf[(XRES+BARSIZE)*(y+j)+(x+j+6)] = colour;
+				vid_buf[(XRES+BARSIZE)*(y+j)+(x+j+7)] = colour;
+				vid_buf[(XRES+BARSIZE)*(y+j)+(x-j+21)] = colour;
+				vid_buf[(XRES+BARSIZE)*(y+j)+(x-j+22)] = colour;
 			}
 		}
 		else if (current->GetID() == DECO_ADD)
-			drawtext(vid_buf, x+12, y+5, "+", COLR(decocolor), COLG(decocolor), COLB(decocolor), 255);
+			drawtext(vid_buf, x+12, y+5, "+", COLR(decocolour), COLG(decocolour), COLB(decocolour), 255);
 		else if (current->GetID() == DECO_SUBTRACT)
-			drawtext(vid_buf, x+12, y+5, "-", COLR(decocolor), COLG(decocolor), COLB(decocolor), 255);
+			drawtext(vid_buf, x+12, y+5, "-", COLR(decocolour), COLG(decocolour), COLB(decocolour), 255);
 		else if (current->GetID() == DECO_MULTIPLY)
-			drawtext(vid_buf, x+12, y+4, "x", COLR(decocolor), COLG(decocolor), COLB(decocolor), 255);
+			drawtext(vid_buf, x+12, y+4, "x", COLR(decocolour), COLG(decocolour), COLB(decocolour), 255);
 		else if (current->GetID() == DECO_DIVIDE)
-			drawtext(vid_buf, x+12, y+5, "/", COLR(decocolor), COLG(decocolor), COLB(decocolor), 255);
+			drawtext(vid_buf, x+12, y+5, "/", COLR(decocolour), COLG(decocolour), COLB(decocolour), 255);
 	}
 	else if (current->GetType() == GOL_TOOL)
 	{
@@ -693,8 +693,8 @@ int draw_tool_xy(pixel *vid_buf, int x, int y, Tool* current)
 			draw_tool_button(vid_buf, x, y, PIXPACK(fav[current->GetID()-FAV_START].colour), fav[current->GetID()-FAV_START].name);
 		else if (current->GetID() >= HUD_START && current->GetID() < HUD_START+HUD_NUM)
 		{
-			if (hud_menu[current->GetID()-HUD_START].color != COLPACK(0x000000))
-				draw_tool_button(vid_buf, x, y, PIXPACK(hud_menu[current->GetID()-HUD_START].color), hud_menu[current->GetID()-HUD_START].name);
+			if (hud_menu[current->GetID()-HUD_START].colour != COLPACK(0x000000))
+				draw_tool_button(vid_buf, x, y, PIXPACK(hud_menu[current->GetID()-HUD_START].colour), hud_menu[current->GetID()-HUD_START].name);
 			else
 				draw_tool_button(vid_buf, x, y, PIXPACK(globalSim->elements[((current->GetID()-HUD_START)*53)%(PT_NUM-1)+1].Colour), hud_menu[current->GetID()-HUD_START].name);
 		}
@@ -1728,7 +1728,7 @@ void draw_air(pixel *vid)
 				{
 					float ttemp = hv[y][x]+(-MIN_TEMP);
 					int caddress = (int)restrict_flt((int)( restrict_flt(ttemp, 0.0f, (float)MAX_TEMP+(-MIN_TEMP)) / ((MAX_TEMP+(-MIN_TEMP))/1024) ) *3.0f, 0.0f, (1024.0f*3)-3);
-					c = PIXRGB((int)((unsigned char)color_data[caddress]*0.7f), (int)((unsigned char)color_data[caddress+1]*0.7f), (int)((unsigned char)color_data[caddress+2]*0.7f));
+					c = PIXRGB((int)((unsigned char)colour_data[caddress]*0.7f), (int)((unsigned char)colour_data[caddress+1]*0.7f), (int)((unsigned char)colour_data[caddress+2]*0.7f));
 				}
 			}
 			else if (display_mode & DISPLAY_AIRC)
@@ -1767,7 +1767,7 @@ void draw_air(pixel *vid)
 			{
 				c = PIXRGB(PIXR(c)/10,PIXG(c)/10,PIXB(c)/10);
 			}
-			for (j=0; j<CELL; j++)//draws the colors
+			for (j=0; j<CELL; j++)//draws the colours
 				for (i=0; i<CELL; i++)
 					vid[(x*CELL+i) + (y*CELL+j)*(XRES+BARSIZE)] = c;
 		}
@@ -1837,7 +1837,7 @@ void draw_grav_zones(pixel * vid)
 		{
 			if(gravmask[y*(XRES/CELL)+x])
 			{
-				for (j=0; j<CELL; j++)//draws the colors
+				for (j=0; j<CELL; j++)//draws the colours
 					for (i=0; i<CELL; i++)
 						if(i == j)
 							drawpixel(vid, x*CELL+i, y*CELL+j, 255, 200, 0, 120);
@@ -1914,7 +1914,7 @@ void draw_line(pixel *vid, int x1, int y1, int x2, int y2, int r, int g, int b, 
 	}
 }
 
-//adds color to a pixel, does not overwrite.
+//adds colour to a pixel, does not overwrite.
 void addpixel(pixel *vid, int x, int y, int r, int g, int b, int a)
 {
 	pixel t;
@@ -1933,7 +1933,7 @@ void addpixel(pixel *vid, int x, int y, int r, int g, int b, int a)
 	vid[y*(XRES+BARSIZE)+x] = PIXRGB(r,g,b);
 }
 
-//draws one of two colors, so that it is always clearly visible
+//draws one of two colours, so that it is always clearly visible
 void xor_pixel(int x, int y, pixel *vid)
 {
 	int c;
@@ -2338,9 +2338,9 @@ void render_parts(pixel *vid, Point mousePos)
 					else
 						caddress = (int)restrict_flt((int)( restrict_flt((float)(parts[i].temp+(-lowesttemp)), 0.0f, (float)highesttemp+(-lowesttemp)) / ((float)(highesttemp+(-lowesttemp))/1024) ) *3.0f, 0.0f, (1024.0f*3)-3);
 					firea = 255;
-					firer = colr = (unsigned char)color_data[caddress];
-					fireg = colg = (unsigned char)color_data[caddress+1];
-					fireb = colb = (unsigned char)color_data[caddress+2];
+					firer = colr = (unsigned char)colour_data[caddress];
+					fireg = colg = (unsigned char)colour_data[caddress+1];
+					fireb = colb = (unsigned char)colour_data[caddress+2];
 					cola = 255;
 					if(pixel_mode & (FIREMODE | PMODE_GLOW))
 						pixel_mode = (pixel_mode & ~(FIREMODE|PMODE_GLOW)) | PMODE_BLUR;

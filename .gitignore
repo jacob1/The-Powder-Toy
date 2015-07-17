@@ -44,3 +44,4 @@ config.log
 /includes/zlib.h
 /includes/zconf.h
 /.sconf_temp/
+*.bak

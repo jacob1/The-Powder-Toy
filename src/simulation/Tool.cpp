@@ -322,24 +322,24 @@ Tool(DECO_TOOL, decoID, decoTypes[decoID].identifier)
 }
 int DecoTool::DrawPoint(Brush* brush, Point position)
 {
-	ARGBColour col = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolor;
+	ARGBColour col = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolour;
 	globalSim->CreateDecoBrush(position.X, position.Y, ID, col, brush);
 	return 0;
 }
 void DecoTool::DrawLine(Brush* brush, Point startPos, Point endPos, bool held)
 {
-	ARGBColour col = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolor;
+	ARGBColour col = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolour;
 	globalSim->CreateDecoLine(startPos.X, startPos.Y, endPos.X, endPos.Y, ID, col, brush);
 }
 void DecoTool::DrawRect(Brush* brush, Point startPos, Point endPos)
 {
-	ARGBColour col = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolor;
+	ARGBColour col = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolour;
 	globalSim->CreateDecoBox(startPos.X, startPos.Y, endPos.X, endPos.Y, ID, col);
 }
 int DecoTool::FloodFill(Brush* brush, Point position)
 {
 	PropertyValue col;
-	col.UInteger = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolor;
+	col.UInteger = (ID == DECO_CLEAR) ? COLARGB(0, 0, 0, 0) : decocolour;
 	return globalSim->FloodProp(position.X, position.Y, UInteger, col, offsetof(particle, dcolour));
 }
 Tool* DecoTool::Sample(Point position)
@@ -355,7 +355,7 @@ Tool* DecoTool::Sample(Point position)
 		if (cr && cr<255) cr++;
 		if (cg && cg<255) cg++;
 		if (cb && cb<255) cb++;
-		decocolor = COLARGB(255, cr, cg, cb);
+		decocolour = COLARGB(255, cr, cg, cb);
 		currR = cr, currG = cg, currB = cb, currA = 255;
 		RGB_to_HSV(currR, currG, currB, &currH, &currS, &currV);
 	}

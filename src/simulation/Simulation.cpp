@@ -257,10 +257,10 @@ int Simulation::part_create(int p, int x, int y, int t, int v)
 	// Fancy dust effects for powder types
 	if ((elements[t].Properties & TYPE_PART) && pretty_powder)
 	{
-		int sandcolor = (int)(20.0f*sin((float)(currentTick%360)*(M_PI/180.0f)));
-		int colr = (int)(COLR(elements[t].Colour)+sandcolor*1.3f+(rand()%40)-20+(rand()%30)-15);
-		int colg = (int)(COLG(elements[t].Colour)+sandcolor*1.3f+(rand()%40)-20+(rand()%30)-15);
-		int colb = (int)(COLB(elements[t].Colour)+sandcolor*1.3f+(rand()%40)-20+(rand()%30)-15);
+		int sandcolour = (int)(20.0f*sin((float)(currentTick%360)*(M_PI/180.0f)));
+		int colr = (int)(COLR(elements[t].Colour)+sandcolour*1.3f+(rand()%40)-20+(rand()%30)-15);
+		int colg = (int)(COLG(elements[t].Colour)+sandcolour*1.3f+(rand()%40)-20+(rand()%30)-15);
+		int colb = (int)(COLB(elements[t].Colour)+sandcolour*1.3f+(rand()%40)-20+(rand()%30)-15);
 		colr = std::max(0, std::min(255, colr));
 		colg = std::max(0, std::min(255, colg));
 		colb = std::max(0, std::min(255, colb));
@@ -2371,7 +2371,7 @@ int Simulation::FloodProp(int x, int y, PropertyType propType, PropertyValue pro
 	return did_something;
 }
 
-void Simulation::CreateDeco(int x, int y, int tool, ARGBColour color)
+void Simulation::CreateDeco(int x, int y, int tool, ARGBColour colour)
 {
 	int rp, tr = 0, tg = 0, tb = 0, ta = 0;
 	float strength = 0.01f, colr, colg, colb, cola;
@@ -2387,7 +2387,7 @@ void Simulation::CreateDeco(int x, int y, int tool, ARGBColour color)
 	switch (tool)
 	{
 	case DECO_DRAW:
-		parts[rp>>8].dcolour = color;
+		parts[rp>>8].dcolour = colour;
 		break;
 	case DECO_CLEAR:
 		parts[rp>>8].dcolour = COLARGB(0, 0, 0, 0);
@@ -2398,34 +2398,34 @@ void Simulation::CreateDeco(int x, int y, int tool, ARGBColour color)
 	case DECO_DIVIDE:
 		if (!parts[rp>>8].dcolour)
 			return;
-		cola = COLA(color)/255.0f;
+		cola = COLA(colour)/255.0f;
 		colr = (float)COLR(parts[rp>>8].dcolour);
 		colg = (float)COLG(parts[rp>>8].dcolour);
 		colb = (float)COLB(parts[rp>>8].dcolour);
 
 		if (tool == DECO_ADD)
 		{
-			colr += (COLR(color)*strength)*cola;
-			colg += (COLG(color)*strength)*cola;
-			colb += (COLB(color)*strength)*cola;
+			colr += (COLR(colour)*strength)*cola;
+			colg += (COLG(colour)*strength)*cola;
+			colb += (COLB(colour)*strength)*cola;
 		}
 		else if (tool == DECO_SUBTRACT)
 		{
-			colr -= (COLR(color)*strength)*cola;
-			colg -= (COLG(color)*strength)*cola;
-			colb -= (COLB(color)*strength)*cola;
+			colr -= (COLR(colour)*strength)*cola;
+			colg -= (COLG(colour)*strength)*cola;
+			colb -= (COLB(colour)*strength)*cola;
 		}
 		else if (tool == DECO_MULTIPLY)
 		{
-			colr *= 1.0f+(COLR(color)/255.0f*strength)*cola;
-			colg *= 1.0f+(COLG(color)/255.0f*strength)*cola;
-			colb *= 1.0f+(COLB(color)/255.0f*strength)*cola;
+			colr *= 1.0f+(COLR(colour)/255.0f*strength)*cola;
+			colg *= 1.0f+(COLG(colour)/255.0f*strength)*cola;
+			colb *= 1.0f+(COLB(colour)/255.0f*strength)*cola;
 		}
 		else if (tool == DECO_DIVIDE)
 		{
-			colr /= 1.0f+(COLR(color)/255.0f*strength)*cola;
-			colg /= 1.0f+(COLG(color)/255.0f*strength)*cola;
-			colb /= 1.0f+(COLB(color)/255.0f*strength)*cola;
+			colr /= 1.0f+(COLR(colour)/255.0f*strength)*cola;
+			colg /= 1.0f+(COLG(colour)/255.0f*strength)*cola;
+			colb /= 1.0f+(COLB(colour)/255.0f*strength)*cola;
 		}
 
 		tr = int(colr+.5f); tg = int(colg+.5f); tb = int(colb+.5f);
@@ -2492,13 +2492,13 @@ void Simulation::CreateDeco(int x, int y, int tool, ARGBColour color)
 	}
 }
 
-void Simulation::CreateDecoBrush(int x, int y, int tool, ARGBColour color, Brush* brush)
+void Simulation::CreateDecoBrush(int x, int y, int tool, ARGBColour colour, Brush* brush)
 {
 	int rx = brush->GetRadius().X, ry = brush->GetRadius().Y;
 	if (rx <= 0) //workaround for rx == 0 crashing. todo: find a better fix later.
 	{
 		for (int j = y - ry; j <= y + ry; j++)
-			CreateDeco(x, j, tool, color);
+			CreateDeco(x, j, tool, colour);
 	}
 	else
 	{
@@ -2524,16 +2524,16 @@ void Simulation::CreateDecoBrush(int x, int y, int tool, ARGBColour color, Brush
 
 			for (j = tempy; j <= jmax; j++)
 			{
-				CreateDeco(i, j, tool, color);
+				CreateDeco(i, j, tool, colour);
 				//don't create twice in the vertical center line
 				if (i != x)
-					CreateDeco(2*x-i, j, tool, color);
+					CreateDeco(2*x-i, j, tool, colour);
 			}
 		}
 	}
 }
 
-void Simulation::CreateDecoLine(int x1, int y1, int x2, int y2, int tool, ARGBColour color, Brush* brush)
+void Simulation::CreateDecoLine(int x1, int y1, int x2, int y2, int tool, ARGBColour colour, Brush* brush)
 {
 	int x, y, dx, dy, sy;
 	bool reverseXY = abs(y2-y1) > abs(x2-x1);
@@ -2567,9 +2567,9 @@ void Simulation::CreateDecoLine(int x1, int y1, int x2, int y2, int tool, ARGBCo
 	for (x=x1; x<=x2; x++)
 	{
 		if (reverseXY)
-			CreateDecoBrush(y, x, tool, color, brush);
+			CreateDecoBrush(y, x, tool, colour, brush);
 		else
-			CreateDecoBrush(x, y, tool, color, brush);
+			CreateDecoBrush(x, y, tool, colour, brush);
 		e += de;
 		if (e >= 0.5f)
 		{
@@ -2577,16 +2577,16 @@ void Simulation::CreateDecoLine(int x1, int y1, int x2, int y2, int tool, ARGBCo
 			if (!(brush->GetRadius().X+brush->GetRadius().Y) && ((y1<y2) ? (y<=y2) : (y>=y2)))
 			{
 				if (reverseXY)
-					CreateDecoBrush(y, x, tool, color, brush);
+					CreateDecoBrush(y, x, tool, colour, brush);
 				else
-					CreateDecoBrush(x, y, tool, color, brush);
+					CreateDecoBrush(x, y, tool, colour, brush);
 			}
 			e -= 1.0f;
 		}
 	}
 }
 
-void Simulation::CreateDecoBox(int x1, int y1, int x2, int y2, int tool, ARGBColour color)
+void Simulation::CreateDecoBox(int x1, int y1, int x2, int y2, int tool, ARGBColour colour)
 {
 	if (x1 > x2)
 	{
@@ -2602,10 +2602,10 @@ void Simulation::CreateDecoBox(int x1, int y1, int x2, int y2, int tool, ARGBCol
 	}
 	for (int j = y1; j <= y2; j++)
 		for (int i = x1; i <= x2; i++)
-			CreateDeco(i, j, tool, color);
+			CreateDeco(i, j, tool, colour);
 }
 
-void Simulation::FloodDeco(int x, int y, ARGBColour color, ARGBColour replace)
+void Simulation::FloodDeco(int x, int y, ARGBColour colour, ARGBColour replace)
 {
 	//TODO: implement
 }

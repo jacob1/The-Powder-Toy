@@ -59,7 +59,7 @@ int Particle_GetOffset(const char * key, int * format)
 		offset = offsetof(particle, dcolour);
 		*format = 3;
 	}
-	else if (!strcmp(key, "dcolor"))
+	else if (!strcmp(key, "dcolour"))
 	{
 		offset = offsetof(particle, dcolour);
 		*format = 3;

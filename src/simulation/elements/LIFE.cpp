@@ -26,7 +26,7 @@ int LIFE_update(UPDATE_FUNC_ARGS)
 int LIFE_graphics(GRAPHICS_FUNC_ARGS)
 {
 	ARGBColour col;
-	if (cpart->ctype==NGT_LOTE)//colors for life states
+	if (cpart->ctype==NGT_LOTE)//colours for life states
 	{
 		if (cpart->tmp==2)
 			col = COLRGB(255, 128, 0);
@@ -35,14 +35,14 @@ int LIFE_graphics(GRAPHICS_FUNC_ARGS)
 		else
 			col = COLRGB(255, 0, 0);
 	}
-	else if (cpart->ctype==NGT_FRG2)//colors for life states
+	else if (cpart->ctype==NGT_FRG2)//colours for life states
 	{
 		if (cpart->tmp==2)
 			col = COLRGB(0, 100, 50);
 		else
 			col = COLRGB(0, 255, 90);
 	}
-	else if (cpart->ctype==NGT_STAR)//colors for life states
+	else if (cpart->ctype==NGT_STAR)//colours for life states
 	{
 		if (cpart->tmp==4)
 			col = COLRGB(0, 0, 128);
@@ -55,14 +55,14 @@ int LIFE_graphics(GRAPHICS_FUNC_ARGS)
 		else
 			col = COLRGB(0, 0, 70);
 	}
-	else if (cpart->ctype==NGT_FROG)//colors for life states
+	else if (cpart->ctype==NGT_FROG)//colours for life states
 	{
 		if (cpart->tmp==2)
 			col = COLRGB(0, 100, 0);
 		else
 			col = COLRGB(0, 255, 0);
 	}
-	else if (cpart->ctype==NGT_BRAN)//colors for life states
+	else if (cpart->ctype==NGT_BRAN)//colours for life states
 	{
 		if (cpart->tmp==1)
 			col = COLRGB(150, 150, 0);

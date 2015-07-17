@@ -19,7 +19,7 @@ int ARAY_update(UPDATE_FUNC_ARGS)
 {
 	int r, nxx, nyy, docontinue, nxi, nyi, rx, ry, ry1, rx1;
 	if (parts[i].life==0) {
-		int colored =0;
+		int coloured =0;
 		for (rx=-1; rx<2; rx++)
 			for (ry=-1; ry<2; ry++)
 				if (BOUNDS_CHECK && (rx || ry))
@@ -43,7 +43,7 @@ int ARAY_update(UPDATE_FUNC_ARGS)
 										parts[nr].tmp = 2;
 										parts[nr].life = 2;
 									} else
-										parts[nr].ctype = colored;
+										parts[nr].ctype = coloured;
 									parts[nr].temp = parts[i].temp;
 									if (isBlackDeco)
 										parts[nr].dcolour = COLRGB(0, 0, 0);
@@ -61,8 +61,8 @@ int ARAY_update(UPDATE_FUNC_ARGS)
 											{
 												parts[r>>8].life = 1020; //makes it last a while
 												parts[r>>8].tmp = 1;
-												if (!parts[r>>8].ctype) //and colors it if it isn't already
-													parts[r>>8].ctype = colored;
+												if (!parts[r>>8].ctype) //and colours it if it isn't already
+													parts[r>>8].ctype = coloured;
 											}
 											docontinue = 0;//then stop it
 										}
@@ -78,11 +78,11 @@ int ARAY_update(UPDATE_FUNC_ARGS)
 									}
 									if (isBlackDeco)
 										parts[r>>8].dcolour = COLRGB(0, 0, 0);
-								} else if ((r&0xFF)==PT_FILT) {//get color if passed through FILT
+								} else if ((r&0xFF)==PT_FILT) {//get colour if passed through FILT
 									if (parts[r>>8].tmp != 6)
 									{
-										colored = interactWavelengths(&parts[r>>8], colored);
-										if (!colored)
+										coloured = interactWavelengths(&parts[r>>8], coloured);
+										if (!coloured)
 											break;
 									}
 									isBlackDeco = (parts[r>>8].dcolour==COLRGB(0, 0, 0));

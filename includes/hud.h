@@ -20,7 +20,7 @@ void GetTimeString(int currtime, char *string, int length);
 struct hud
 {
 	const char *name;
-	ARGBColour color;
+	ARGBColour colour;
 	int menunum;
 	const char *description;
 };
@@ -86,8 +86,8 @@ const hud hud_menu[] =
 	//43
 	{"VEL",	 COLPACK(0x000000), 3, "Show the velocity"},
 	{"VEL#", COLPACK(0x000000), 3, "Show velocity to "},
-	{"PHOT", COLPACK(0x000000), 2, "Show the color of PHOT, FILT, and BIZR wavelengths"},
-	{"DECO", COLPACK(0x000000), 2, "Show the decoration color"},
+	{"PHOT", COLPACK(0x000000), 2, "Show the colour of PHOT, FILT, and BIZR wavelengths"},
+	{"DECO", COLPACK(0x000000), 2, "Show the decoration colour"},
 	{"FLAG", COLPACK(0x000000), 2, "Show the flags (mostly unused)"},
 	{"WALL", COLPACK(0x000000), 2, "Show wall names"},
 	{"LIFE", COLPACK(0x000000), 2, "Show the name of life particles instead of LIFE([NAME])"},

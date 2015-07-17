@@ -348,7 +348,7 @@ int ui_edit_draw(pixel *vid_buf, ui_edit *ed)
 
 	if (ed->str[0])
 	{
-		int deletecolor = 127+ed->overDelete*64;
+		int deletecolour = 127+ed->overDelete*64;
 		if (ed->multiline) {
 			ret = drawtextwrap(vid_buf, ed->x, ed->y, ed->w-14, 0, str, 255, 255, 255, 255);
 			if (ed->highlightlength)
@@ -357,7 +357,7 @@ int ui_edit_draw(pixel *vid_buf, ui_edit *ed)
 				highlightstr[ed->highlightlength] = 0;
 				drawhighlightwrap(vid_buf, ed->x, ed->y, ed->w-14, 0, ed->str, ed->highlightstart, ed->highlightlength);
 			}
-			drawtext(vid_buf, ed->x+ed->w-11, ed->y-1, "\xAA", deletecolor, deletecolor, deletecolor, 255);
+			drawtext(vid_buf, ed->x+ed->w-11, ed->y-1, "\xAA", deletecolour, deletecolour, deletecolour, 255);
 		} else {
 			ret = drawtext(vid_buf, ed->x, ed->y, str, 255, 255, 255, 255);
 			if (ed->highlightlength)
@@ -366,7 +366,7 @@ int ui_edit_draw(pixel *vid_buf, ui_edit *ed)
 				highlightstr[ed->highlightlength] = 0;
 				drawhighlight(vid_buf, ed->x+textwidth(str)-textwidth(&str[ed->highlightstart]), ed->y, highlightstr);
 			}
-			drawtext(vid_buf, ed->x+ed->w-11, ed->y-1, "\xAA", deletecolor, deletecolor, deletecolor, 255);
+			drawtext(vid_buf, ed->x+ed->w-11, ed->y-1, "\xAA", deletecolour, deletecolour, deletecolour, 255);
 		}
 	}
 	else if (!ed->focus)
@@ -2989,10 +2989,10 @@ Tool* menu_draw(int mx, int my, int b, int bq, int i)
 			{
 				drawrect(vid_buf, presetx-1, y-1, 29, 17, 255, 55, 55, 255);
 				std::stringstream identifier;
-				identifier << "DEFAULT_DECOR_COLOUR_" << colorlist[n-DECO_PRESET_START].descs;
+				identifier << "DEFAULT_DECOR_COLOUR_" << colourlist[n-DECO_PRESET_START].descs;
 				over =  new Tool(DECO_TOOL, n, identifier.str());
 			}
-			draw_tool_button(vid_buf, presetx, y, PIXPACK(colorlist[n-DECO_PRESET_START].colour), "");
+			draw_tool_button(vid_buf, presetx, y, PIXPACK(colourlist[n-DECO_PRESET_START].colour), "");
 			presetx += 31;
 		}
 	}
@@ -3154,7 +3154,7 @@ void menu_draw_text(Tool* over, int y)
 	else if (over->GetType() == GOL_TOOL)
 		toolTip << golTypes[toolID].description;
 	else if (toolID >= DECO_PRESET_START && toolID < DECO_PRESET_START + NUM_COLOR_PRESETS)
-		toolTip << colorlist[toolID-DECO_PRESET_START].descs;
+		toolTip << colourlist[toolID-DECO_PRESET_START].descs;
 	else if (over->GetType() == WALL_TOOL)
 		toolTip << wallTypes[toolID].descs;
 	else if (over->GetType() == TOOL_TOOL)
@@ -3275,9 +3275,9 @@ void menu_select_element(int b, Tool* over)
 		}
 		else if (toolID >= DECO_PRESET_START && toolID < DECO_PRESET_START+NUM_COLOR_PRESETS)
 		{
-			ARGBColour newDecoColor = colorlist[toolID-DECO_PRESET_START].colour;
-			if (newDecoColor != decocolor)
-				decocolor = newDecoColor;
+			ARGBColour newDecoColor = colourlist[toolID-DECO_PRESET_START].colour;
+			if (newDecoColor != decocolour)
+				decocolour = newDecoColor;
 			else
 			{
 				if (activeTools[0]->GetIdentifier() != "DEFAULT_DECOR_SET")
@@ -3285,7 +3285,7 @@ void menu_select_element(int b, Tool* over)
 					activeTools[0] = GetToolFromIdentifier("DEFAULT_DECOR_SET");
 				}
 			}
-			currR = COLR(decocolor), currG = COLG(decocolor), currB = COLB(decocolor), currA = COLA(decocolor);
+			currR = COLR(decocolour), currG = COLG(decocolour), currB = COLB(decocolour), currA = COLA(decocolour);
 			RGB_to_HSV(currR, currG, currB, &currH, &currS, &currV);
 		}
 		else if ((sdl_mod & (KMOD_LALT)) && (sdl_mod & (KMOD_CTRL|KMOD_META)) && ((ElementTool*)over)->GetID() >= 0)
@@ -6873,7 +6873,7 @@ const static struct command_match matches [] = {
 	{"ren.r", "ren.renderModes("},
 	{"ren.di", "ren.displayModes("},
 	{"ren.colou", "ren.colourMode("},
-	{"ren.c", "ren.colorMode("},
+	{"ren.c", "ren.colourMode("},
 	{"ren.dec", "ren.decorations("},
 	{"ren.g", "ren.grid("},
 	{"ren.deb", "ren.debugHUD("},
@@ -7213,7 +7213,7 @@ ui_edit box_G;
 ui_edit box_B;
 ui_edit box_A;
 
-void init_color_boxes()
+void init_colour_boxes()
 {
 	ui_edit_init(&box_R, 5, 264, 30, 14);
 	strcpy(box_R.str, "255");
@@ -7232,17 +7232,17 @@ void init_color_boxes()
 	box_A.focus = 0;
 }
 
-void decoration_textbox_color(ui_edit* textbox, int *color, int *color2)
+void decoration_textbox_colour(ui_edit* textbox, int *colour, int *colour2)
 {
-	*color = atoi((*textbox).str);
-	if (*color > 255) *color = 255;
-	if (*color < 0) *color = 0;
-	*color2 = *color;
+	*colour = atoi((*textbox).str);
+	if (*colour > 255) *colour = 255;
+	if (*colour < 0) *colour = 0;
+	*colour2 = *colour;
 	RGB_to_HSV(currR, currG, currB, &currH, &currS, &currV);
 	(*textbox).focus = 0;
 }
 
-ARGBColour decocolor = COLARGB(255, 255, 0, 0);
+ARGBColour decocolour = COLARGB(255, 255, 0, 0);
 int currA = 255, currR = 255, currG = 0, currB = 0;
 int currH = 0, currS = 255, currV = 255;
 int on_left = 1, decobox_hidden = 0;
@@ -7251,7 +7251,7 @@ int deco_disablestuff;
 void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 {
 	pixel t;
-	int i, hh, ss, vv, can_select_color = 1;
+	int i, hh, ss, vv, can_select_colour = 1;
 	int cr = 255, cg = 0, cb = 0, ca = 255;
 	int th = currH, ts = currS, tv = currV;
 	int grid_offset_x;
@@ -7259,11 +7259,11 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 	int onleft_button_offset_x;
 	//char frametext[64];
 
-	if (!deco_disablestuff && b) //If mouse is down, but a color isn't already being picked
-		can_select_color = 0;
+	if (!deco_disablestuff && b) //If mouse is down, but a colour isn't already being picked
+		can_select_colour = 0;
 	if (!bq)
 		deco_disablestuff = 0;
-	currR = COLR(decocolor), currG = COLG(decocolor), currB = COLB(decocolor), currA = COLA(decocolor);
+	currR = COLR(decocolour), currG = COLG(decocolour), currB = COLB(decocolour), currA = COLA(decocolour);
 
 	/*for (i = 0; i <= parts_lastActiveIndex; i++)
 		if (parts[i].type == PT_ANIM)
@@ -7300,7 +7300,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 	
 	//drawrect(vid_buf, -1, -1, XRES+1, YRES+1, 220, 220, 220, 255);
 	//drawrect(vid_buf, -1, -1, XRES+2, YRES+2, 70, 70, 70, 255);
-	//drawtext(vid_buf, 2, 388, "Welcome to the decoration editor v.3 (by cracker64) \n\nClicking the current color on the window will move it to the other side. Right click is eraser. ", 255, 255, 255, 255);
+	//drawtext(vid_buf, 2, 388, "Welcome to the decoration editor v.3 (by cracker64) \n\nClicking the current colour on the window will move it to the other side. Right click is eraser. ", 255, 255, 255, 255);
 	//drawtext(vid_buf, 2, 388, "Welcome to the decoration editor v.4 (by cracker64/jacob1)", 255, 255, 255, 255);
 	//sprintf(frametext,"Frame %i/%i",framenum+1,maxframes);
 	//drawtext(vid_buf, 2, 399, frametext, 255, 255, 255, 255);
@@ -7321,7 +7321,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		sprintf(hex,"0x%.8X",(currA<<24)+(currR<<16)+(currG<<8)+currB);
 		drawtext(vid_buf,on_left?145:504,264,hex,currR,currG,currB,currA);
 
-		//draw color square
+		//draw colour square
 		for(ss=0; ss<=255; ss++)
 		{
 			int lasth = -1, currh = 0;
@@ -7375,7 +7375,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		deco_disablestuff = 1;
 		if(sdl_key == SDLK_RETURN)
 		{
-			decoration_textbox_color(&box_R, &cr, &currR);
+			decoration_textbox_colour(&box_R, &cr, &currR);
 		}
 	}
 	if(!box_G.focus)
@@ -7385,7 +7385,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		deco_disablestuff = 1;
 		if(sdl_key == SDLK_RETURN)
 		{
-			decoration_textbox_color(&box_G, &cg, &currG);
+			decoration_textbox_colour(&box_G, &cg, &currG);
 		}
 	}
 	if(!box_B.focus)
@@ -7395,7 +7395,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		deco_disablestuff = 1;
 		if(sdl_key == SDLK_RETURN)
 		{
-			decoration_textbox_color(&box_B, &cb, &currB);
+			decoration_textbox_colour(&box_B, &cb, &currB);
 		}
 	}
 	if(!box_A.focus)
@@ -7405,7 +7405,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		deco_disablestuff = 1;
 		if(sdl_key == SDLK_RETURN)
 		{
-			decoration_textbox_color(&box_A, &ca, &currA);
+			decoration_textbox_colour(&box_A, &ca, &currA);
 		}
 	}
 
@@ -7418,7 +7418,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 	else
 		drawtext(vid_buf, 297, YRES+2, "\xCA", 255, 255, 255, 255);
 
-	if(can_select_color && !decobox_hidden && mx >= window_offset_x && my >= 2 && mx <= window_offset_x+255+4+10+5 && my <= 2+255+20)//in the main window
+	if(can_select_colour && !decobox_hidden && mx >= window_offset_x && my >= 2 && mx <= window_offset_x+255+4+10+5 && my <= 2+255+20)//in the main window
 	{
 		//inside brightness bar
 		if(mx >= grid_offset_x +255+4 && my >= 5 && mx <= grid_offset_x+255+4+10 && my <= 5+255)
@@ -7442,7 +7442,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 			if(!box_A.focus)
 				sprintf(box_A.str,"%d",ca);
 		}
-		//inside color grid
+		//inside colour grid
 		if(mx >= grid_offset_x && my >= 5 && mx <= grid_offset_x+255 && my <= 5+255)
 		{
 			th = mx - grid_offset_x;
@@ -7559,7 +7559,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		if (box_R.focus)
 		{
 			box_R.focus = box_R.cursorstart = 0;
-			decoration_textbox_color(&box_R, &cr, &currR);
+			decoration_textbox_colour(&box_R, &cr, &currR);
 
 			box_G.focus = 1;
 			box_G.cursorstart = 0;
@@ -7568,7 +7568,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		else if (box_G.focus)
 		{
 			box_G.focus = box_G.cursorstart = 0;
-			decoration_textbox_color(&box_G, &cg, &currG);
+			decoration_textbox_colour(&box_G, &cg, &currG);
 
 			box_B.focus = 1;
 			box_B.cursorstart = 0;
@@ -7577,7 +7577,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		else if (box_B.focus)
 		{
 			box_B.focus = box_B.cursorstart = 0;
-			decoration_textbox_color(&box_B, &cb, &currB);
+			decoration_textbox_colour(&box_B, &cb, &currB);
 
 			box_A.focus = 1;
 			box_A.cursorstart = 0;
@@ -7586,7 +7586,7 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 		else if (box_A.focus)
 		{
 			box_A.focus = box_A.cursorstart = 0;
-			decoration_textbox_color(&box_A, &ca, &currA);
+			decoration_textbox_colour(&box_A, &ca, &currA);
 
 			box_R.focus = 1;
 			box_R.cursorstart = 0;
@@ -7602,14 +7602,14 @@ void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my)
 			{
 				parts[i].tmp2 = 0;
 			}* /
-		decocolor = (currA<<24)|PIXRGB(currR,currG,currB);
+		decocolour = (currA<<24)|PIXRGB(currR,currG,currB);
 	}*/
 	/*for (i = 0; i <= parts_lastActiveIndex; i++)
 		if (parts[i].type == PT_ANIM)
 		{
 			parts[i].tmp2 = 0;
 		}*/
-	decocolor = COLARGB(currA, currR, currG, currB);
+	decocolour = COLARGB(currA, currR, currG, currB);
 }
 struct savelist_e;
 typedef struct savelist_e savelist_e;

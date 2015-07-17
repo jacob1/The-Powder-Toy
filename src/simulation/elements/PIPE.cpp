@@ -297,7 +297,7 @@ int PIPE_update(UPDATE_FUNC_ARGS)
 		if (parts[i].tmp & PPIP_TMPFLAG_TRIGGER_REVERSE)
 		{
 			parts[i].tmp ^= PPIP_TMPFLAG_REVERSED;
-			if (parts[i].ctype == 2) //Switch colors so it goes in reverse
+			if (parts[i].ctype == 2) //Switch colours so it goes in reverse
 				parts[i].ctype = 4;
 			else if (parts[i].ctype == 4)
 				parts[i].ctype = 2;
@@ -498,9 +498,9 @@ int PIPE_graphics(GRAPHICS_FUNC_ARGS)
 				graphics_DEFAULT(sim, &tpart, nx, ny, pixel_mode, cola, colr, colg, colb, firea, firer, fireg, fireb);
 			}
 		}
-		//*colr = PIXR(ptypes[cpart->tmp&0xFF].pcolors);
-		//*colg = PIXG(ptypes[cpart->tmp&0xFF].pcolors);
-		//*colb = PIXB(ptypes[cpart->tmp&0xFF].pcolors);
+		//*colr = PIXR(ptypes[cpart->tmp&0xFF].pcolours);
+		//*colg = PIXG(ptypes[cpart->tmp&0xFF].pcolours);
+		//*colb = PIXB(ptypes[cpart->tmp&0xFF].pcolours);
 	}
 	else
 	{

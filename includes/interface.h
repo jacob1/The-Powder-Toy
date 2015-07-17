@@ -55,7 +55,7 @@ struct menu_wall
 };
 typedef struct menu_wall menu_wall;
 
-const menu_wall colorlist[] =
+const menu_wall colourlist[] =
 {
 	{COLPACK(0xFF0000), "Red"},
 	{COLPACK(0x00FF00), "Green"},
@@ -227,7 +227,7 @@ extern int dateformat;
 extern int show_ids;
 extern int fastquit;
 
-extern ARGBColour decocolor;
+extern ARGBColour decocolour;
 extern ui_edit box_R;
 extern ui_edit box_G;
 extern ui_edit box_B;
@@ -358,7 +358,7 @@ int report_ui(pixel *vid_buf, char *save_id, bool bug);
 void console_limit_history(int limit, command_history *commandList);
 int console_ui(pixel *vid_buf);
 
-void init_color_boxes();
+void init_colour_boxes();
 
 void decoration_editor(pixel *vid_buf, int b, int bq, int mx, int my);
 
