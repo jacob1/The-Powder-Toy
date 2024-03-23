@@ -182,7 +182,7 @@ std::unique_ptr<std::vector<char>> Graphics::ptif_pack(PlaneAdapter<std::vector<
 	unsigned char *red_chan = (unsigned char*)calloc(1, w*h);
 	unsigned char *green_chan = (unsigned char*)calloc(1, w*h);
 	unsigned char *blue_chan = (unsigned char*)calloc(1, w*h);
-	unsigned char *data = (unsigned char*)malloc(((w*h)*3)+8);
+	unsigned char *data = (unsigned char*)malloc(((w*h)*3));
 
 	for (int cx = 0; cx < w; cx++)
 	{
@@ -213,7 +213,7 @@ std::unique_ptr<std::vector<char>> Graphics::ptif_pack(PlaneAdapter<std::vector<
 	header[7] = h>>8;
 
 	std::vector<char> result;
-	if (BZ2WCompress(result, (char *)data, ((w*h)*3)+8, ((w*h)*3)+8) != BZ2WCompressOk)
+	if (BZ2WCompress(result, (char *)data, (w*h)*3, (w*h)*3) != BZ2WCompressOk)
 	{
 		free(data);
 		delete[] header;
