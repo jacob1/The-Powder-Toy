@@ -141,6 +141,9 @@ for        arch,     platform,         libc,   statdyn, bplatform,         runso
 ]:
 	if priority < do_priority:
 		continue
+	# Skip unimportant builds for Steam
+	if not publish:
+		continue
 	job_name = f'build'
 	if starcatcher:
 		job_name += f'+target=starcatcher-{starcatcher}'

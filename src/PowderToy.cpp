@@ -321,7 +321,7 @@ int Main(int argc, char *argv[])
 		else
 			perror("failed to chdir to requested ddir");
 	}
-	else
+	/*else
 	{
 		auto ddir = Platform::DefaultDdir();
 		if (!Platform::FileExists("powder.pref"))
@@ -340,7 +340,7 @@ int Main(int argc, char *argv[])
 		{
 			Platform::sharedCwd = ddir;
 		}
-	}
+	}*/
 	// We're now in the correct directory, time to get prefs.
 	explicitSingletons->globalPrefs = std::make_unique<GlobalPrefs>();
 

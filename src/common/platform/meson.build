@@ -96,7 +96,7 @@ conf_data.set('USE_BLUESCREEN', use_bluescreen.to_string())
 
 can_install = get_option('can_install')
 if can_install == 'auto'
-	can_install = 'yes_check'
+	can_install = 'yes'
 	if is_debug
 		can_install = 'yes'
 	endif
