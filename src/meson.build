@@ -4,7 +4,7 @@ app_id = get_option('app_id')
 mod_id = get_option('mod_id')
 is_snapshot = get_option('snapshot')
 is_beta = get_option('beta')
-is_mod = mod_id > 0
+is_mod = false
 conf_data.set('X86', is_x86.to_string())
 conf_data.set('BETA', is_beta.to_string())
 conf_data.set('MOD_ID', mod_id)

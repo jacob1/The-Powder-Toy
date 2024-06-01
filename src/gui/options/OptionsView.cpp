@@ -343,7 +343,7 @@ OptionsView::OptionsView() : ui::Window(ui::Point(-1, -1), ui::Point(320, 340))
 			}
 		} });
 		scrollPanel->AddChild(dataFolderButton);
-		auto *migrationButton = new ui::Button(ui::Point(Size.X - 178, currentY), ui::Point(163, 16), "Migrate to shared data directory");
+		/*auto *migrationButton = new ui::Button(ui::Point(Size.X - 178, currentY), ui::Point(163, 16), "Migrate to shared data directory");
 		migrationButton->SetActionCallback({ [] {
 			ByteString from = Platform::originalCwd;
 			ByteString to = Platform::sharedCwd;
@@ -352,7 +352,7 @@ OptionsView::OptionsView() : ui::Window(ui::Point(-1, -1), ui::Point(320, 340))
 				new InformationMessage("Migration Complete", ret, false);
 			} });
 		} });
-		scrollPanel->AddChild(migrationButton);
+		scrollPanel->AddChild(migrationButton);*/
 		currentY += 26;
 	}
 	{
