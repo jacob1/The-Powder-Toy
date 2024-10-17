@@ -21,6 +21,8 @@ gui_files += files(
 
 powder_files += files(
 	'AvatarButton.cpp',
+	'LocalAvatarButton.cpp',
 	'RichLabel.cpp',
 	'SaveButton.cpp',
+	'Separator.cpp',
 )

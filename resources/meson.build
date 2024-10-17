@@ -118,3 +118,15 @@ endif
 data_files += to_array.process('save_local.png', extra_args: 'save_local_png')
 data_files += to_array.process('save_online.png', extra_args: 'save_online_png')
 data_files += to_array.process('font.bz2', extra_args: 'compressed_font_data')
+data_files += to_array.process('credits.json', extra_args: 'credits_json')
+
+
+avatars_generator = generator(
+	python3_prog,
+	output: [ '@BASENAME@.cpp', '@BASENAME@.h' ],
+	depfile: '@BASENAME@.dep',
+	arguments: [ join_paths(meson.current_source_dir(), 'avatars.py'), '@OUTPUT0@', '@OUTPUT1@', '@DEPFILE@', '@INPUT@', '@EXTRA_ARGS@' ]
+)
+
+data_files += avatars_generator.process('github_avatars/github_avatars.txt', extra_args: 'gh')
+data_files += avatars_generator.process('tpt_avatars/tpt_avatars.txt', extra_args: 'tpt')
