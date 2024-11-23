@@ -1,13 +1,13 @@
 #include "Credits.h"
 
 #include <common/platform/Platform.h>
-#include <gui/interface/AvatarButton.h>
 #include <gui/interface/LocalAvatarButton.h>
 #include <json/json.h>
 
 #include "credits.json.h"
-#include "github_avatars.h"
-#include "tpt_avatars.h"
+#include "gh_avatars.png.h"
+#include "tpt_avatars.png.h"
+#include "ResourceData.h"
 #include "gui/Style.h"
 #include "gui/interface/Button.h"
 #include "gui/interface/Engine.h"
@@ -82,7 +82,9 @@ Credits::Credits():
 		ByteString realname = item["realname"].asString();
 		ByteString message = item["message"].asString();
 
-		auto avatar = tptAvatarLookup[username];
+		unsigned int pos = item["pos"].asUInt();
+		unsigned int size = item["size"].asUInt();
+		ResourceData avatar = { &tpt_avatars[pos], size };
 
 		auto components = AddCredit(avatar, realname.FromUtf8(), message.FromUtf8(), row == 0 ? Half : Large, GetProfileUri(username));
 		organizeComponents(components, scrollPanel->Size.X);
@@ -98,11 +100,14 @@ Credits::Credits():
 	{
 		ByteString gh = item["gh"].asString();
 		ByteString tpt = item["tpt"].isNull() ? "" : item["tpt"].asString();
-
-		auto avatar = ghAvatarLookup[gh];
 		ByteString tptLabelText = GetTptLabelText(tpt, gh);
 
+		unsigned int pos = item["pos"].asUInt();
+		unsigned int size = item["size"].asUInt();
+		ResourceData avatar = { &gh_avatars[pos], size };
+
 		auto components = AddCredit(avatar, gh.FromUtf8(), tptLabelText.FromUtf8(), row <= 2 ? Large : Small, GetGithubCommitsUri(gh));
+		//auto components = AddCredit({}, gh.FromUtf8(), "", Small, "");
 		organizeComponents(components, scrollPanel->Size.X);
 		components.AddToPanel(scrollPanel);
 	}
@@ -116,7 +121,9 @@ Credits::Credits():
 		ByteString username = item["username"].asString();
 		ByteString role = item["role"].asString();
 
-		auto avatar = tptAvatarLookup[username];
+		unsigned int pos = item["pos"].asUInt();
+		unsigned int size = item["size"].asUInt();
+		ResourceData avatar = { &tpt_avatars[pos], size };
 
 		if (role == "Moderator" || role == "HalfMod")
 		{
@@ -134,7 +141,9 @@ Credits::Credits():
 		ByteString username = item["username"].asString();
 		ByteString role = item["role"].asString();
 
-		auto avatar = tptAvatarLookup[username];
+		unsigned int pos = item["pos"].asUInt();
+		unsigned int size = item["size"].asUInt();
+		ResourceData avatar = { &tpt_avatars[pos], size };
 
 		if (role == "Former Staff")
 		{
@@ -160,28 +169,36 @@ ui::ComponentSet Credits::AddCredit(const ResourceData avatar, const String &mes
 {
 	std::vector<ui::Component *> components;
 	int avatarWidth = size == Small ? 40 : 64;
-	int fullWidth = size == Small ? 100 : size == Large ? 155 : 310;
+	int fullWidth = size == Small ? 100 : (size == Large ? 155 : 310);
+	int y = 0;
 
-	auto *avatarButton = new ui::LocalAvatarButton(ui::Point((fullWidth - avatarWidth) / 2, 0), ui::Point(avatarWidth, avatarWidth), avatar.data, avatar.size);
-	if (!uri.empty())
+	if (avatar.size)
 	{
-		avatarButton->SetActionCallback({[uri] {
-			Platform::OpenURI(uri);
-		} });
+		auto *avatarButton = new ui::LocalAvatarButton(ui::Point((fullWidth - avatarWidth) / 2, 0), ui::Point(avatarWidth, avatarWidth), avatar.data, avatar.size);
+		if (!uri.empty())
+		{
+			avatarButton->SetActionCallback({[uri] {
+				Platform::OpenURI(uri);
+			} });
+		}
+		components.push_back(avatarButton);
+
+		y += avatarButton->Size.Y + 2;
 	}
-	components.push_back(avatarButton);
 
 	if (!message1.empty())
 	{
-		auto *message1Label = new ui::Label(ui::Point(0, avatarWidth + 2), ui::Point(fullWidth, 14), message1);
+		auto *message1Label = new ui::Label(ui::Point(0, y), ui::Point(fullWidth, 14), message1);
 		message1Label->Appearance.HorizontalAlign = ui::Appearance::AlignCentre;
 		message1Label->Appearance.VerticalAlign = ui::Appearance::AlignMiddle;
 		components.push_back(message1Label);
+
+		y += message1Label->Size.Y;
 	}
 
 	if (!message2.empty())
 	{
-		auto *message2Label = new ui::Label(ui::Point(0, avatarWidth + 16), ui::Point(fullWidth, 14), message2);
+		auto *message2Label = new ui::Label(ui::Point(0, y), ui::Point(fullWidth, 14), message2);
 		message2Label->Appearance.HorizontalAlign = ui::Appearance::AlignCentre;
 		message2Label->Appearance.VerticalAlign = ui::Appearance::AlignMiddle;
 		message2Label->SetTextColour(ui::Colour(170, 170, 170));
