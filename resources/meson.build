@@ -118,7 +118,4 @@ endif
 data_files += to_array.process('save_local.png', extra_args: 'save_local_png')
 data_files += to_array.process('save_online.png', extra_args: 'save_online_png')
 data_files += to_array.process('font.bz2', extra_args: 'compressed_font_data')
-
 data_files += to_array.process('credits.json', extra_args: 'credits_json')
-data_files += to_array.process('gh_avatars.png', extra_args: 'gh_avatars')
-data_files += to_array.process('tpt_avatars.png', extra_args: 'tpt_avatars')
