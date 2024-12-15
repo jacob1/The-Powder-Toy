@@ -21,7 +21,12 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	auto inputFilename = ByteString(argv[1]);
-	auto outputFilename = ByteString(argv[2]) + ".png";
+	auto outputPrefix = ByteString(argv[2]);
+	ByteString ppmFilename = outputPrefix+".ppm";
+	ByteString ptiFilename = outputPrefix+".pti";
+	ByteString ptiSmallFilename = outputPrefix+"-small.pti";
+	ByteString pngFilename = outputPrefix+".png";
+	ByteString pngSmallFilename = outputPrefix+"-small.png";
 
 	auto simulationData = std::make_unique<SimulationData>();
 
@@ -69,6 +74,19 @@ int main(int argc, char *argv[])
 	}
 
 	auto &video = ren->GetVideo();
-	if (auto data = VideoBuffer(video.data(), RES, video.Size().X).ToPNG())
-		Platform::WriteFile(*data, outputFilename);
+	VideoBuffer screenBuffer = VideoBuffer(video.data(), RES, video.Size().X);
+
+	if (auto data = screenBuffer.ToPNG())
+		Platform::WriteFile(*data, pngFilename);
+
+	if (auto data = screenBuffer.ToPTI())
+		Platform::WriteFile(*data, ptiFilename);
+
+	screenBuffer.Resize(1.0f/3.0f, true);
+
+	if (auto data = screenBuffer.ToPNG())
+		Platform::WriteFile(*data, pngSmallFilename);
+
+	if (auto data = screenBuffer.ToPTI())
+		Platform::WriteFile(*data, ptiSmallFilename);
 }

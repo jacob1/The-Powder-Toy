@@ -12,6 +12,7 @@
 #include "resampler/resampler.h"
 #include "SimulationConfig.h"
 #include "RasterDrawMethodsImpl.h"
+#include "bzip2/bz2wrap.h"
 
 VideoBuffer::VideoBuffer(Vec2<int> size):
 	video(size)
@@ -165,10 +166,64 @@ std::vector<char> VideoBuffer::ToPPM() const
 	return format::PixelsToPPM(video);
 }
 
+std::unique_ptr<std::vector<char>> VideoBuffer::ToPTI() const
+{
+	return format::PixelsToPTI(video);
+}
+
 template struct RasterDrawMethods<VideoBuffer>;
 
 Graphics::Graphics()
 {}
+
+std::unique_ptr<std::vector<char>> Graphics::ptif_pack(PlaneAdapter<std::vector<pixel>> const &input)
+{
+	int w = input.Size().X, h = input.Size().Y;
+	unsigned char *red_chan = (unsigned char*)calloc(1, w*h);
+	unsigned char *green_chan = (unsigned char*)calloc(1, w*h);
+	unsigned char *blue_chan = (unsigned char*)calloc(1, w*h);
+	unsigned char *data = (unsigned char*)malloc(((w*h)*3)+8);
+
+	for (int cx = 0; cx < w; cx++)
+	{
+		for (int cy = 0; cy < h; cy++)
+		{
+			auto rgb = RGB<uint8_t>::Unpack(input[Vec2(cx, cy)]);
+			red_chan[w*(cy)+(cx)] = rgb.Red;
+			green_chan[w*(cy)+(cx)] = rgb.Green;
+			blue_chan[w*(cy)+(cx)] = rgb.Blue;
+		}
+	}
+
+	memcpy(data, red_chan, w*h);
+	memcpy(data+(w*h), green_chan, w*h);
+	memcpy(data+((w*h)*2), blue_chan, w*h);
+	free(red_chan);
+	free(green_chan);
+	free(blue_chan);
+
+	unsigned char *header = new unsigned char[8];
+	header[0] = 'P';
+	header[1] = 'T';
+	header[2] = 'i';
+	header[3] = 1;
+	header[4] = w;
+	header[5] = w>>8;
+	header[6] = h;
+	header[7] = h>>8;
+
+	std::vector<char> result;
+	if (BZ2WCompress(result, (char *)data, ((w*h)*3)+8, ((w*h)*3)+8) != BZ2WCompressOk)
+	{
+		free(data);
+		delete[] header;
+		return nullptr;
+	}
+	result.insert(result.begin(), header, header + 8);
+
+	free(data);
+	return std::make_unique<std::vector<char>>(std::move(result));
+}
 
 void Graphics::draw_icon(int x, int y, Icon icon, unsigned char alpha, bool invert)
 {

@@ -18,6 +18,7 @@ namespace format
 	std::unique_ptr<std::vector<char>> PixelsToPNG(PlaneAdapter<std::vector<pixel>> const &);
 	std::unique_ptr<PlaneAdapter<std::vector<pixel_rgba>>> PixelsFromPNG(std::vector<char> const &);
 	std::unique_ptr<PlaneAdapter<std::vector<pixel>>> PixelsFromPNG(std::vector<char> const &, RGB<uint8_t> background);
+	std::unique_ptr<std::vector<char>> PixelsToPTI(PlaneAdapter<std::vector<pixel>> const &input);
 	void RenderTemperature(StringBuilder &sb, float temp, int scale);
 	float StringToTemperature(String str, int defaultScale);
 }

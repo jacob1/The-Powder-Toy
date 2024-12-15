@@ -56,4 +56,5 @@ public:
 	static std::unique_ptr<VideoBuffer> FromPNG(std::vector<char> const &);
 	std::unique_ptr<std::vector<char>> ToPNG() const;
 	std::vector<char> ToPPM() const;
+	std::unique_ptr<std::vector<char>> ToPTI() const;
 };

@@ -5,6 +5,8 @@
 #include "SimulationConfig.h"
 #include "RasterDrawMethods.h"
 #include <array>
+#include <memory>
+#include <vector>
 
 class Graphics: public RasterDrawMethods<Graphics>
 {
@@ -28,6 +30,8 @@ public:
 	{
 		return video.data();
 	}
+
+	static std::unique_ptr<std::vector<char>> ptif_pack(const PlaneAdapter<std::vector<pixel>> &input);
 
 	VideoBuffer DumpFrame();
 

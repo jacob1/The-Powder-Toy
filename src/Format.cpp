@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <png.h>
 #include "Format.h"
+#include "graphics/Graphics.h"
 #include "graphics/VideoBuffer.h"
 
 ByteString format::UnixtimeToDate(time_t unixtime, ByteString dateFormat, bool local)
@@ -281,6 +282,11 @@ std::unique_ptr<std::vector<char>> format::PixelsToPNG(PlaneAdapter<std::vector<
 	png_write_end(png.get(), NULL);
 
 	return std::make_unique<std::vector<char>>(std::move(output));
+}
+
+std::unique_ptr<std::vector<char>> format::PixelsToPTI(PlaneAdapter<std::vector<pixel>> const &input)
+{
+	return Graphics::ptif_pack(input);
 }
 
 const static char hex[] = "0123456789ABCDEF";
