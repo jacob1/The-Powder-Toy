@@ -19,7 +19,8 @@ Credits::Credits():
 {
 	Json::Value root;
 	Json::Reader reader;
-	if (bool parsed = reader.parse((const char*)credits_json, (const char*)credits_json + credits_json_size, root, false); !parsed) {
+	auto credits = credits_json.AsCharSpan();
+	if (bool parsed = reader.parse(credits.data(), credits.data() + credits.size(), root, false); !parsed) {
 		// Failure. Shouldn't ever happen.
 		return;
 	}
@@ -30,14 +31,20 @@ Credits::Credits():
 	int xPos = 0, yPos = 0, row = 0;
 	int nextY = 0;
 
-	// Organize blocks of components of equal width into rows
-	auto organizeComponents = [&xPos, &yPos, &nextY, &row](ui::ComponentSet components, const int panelWidth) {
-		auto blockSize = components.Size();
+	// Organize blocks of components of equal width into rows, and add them to the scroll panel
+	auto organizeComponents = [&xPos, &yPos, &nextY, &row, &scrollPanel](const auto& components, const int panelWidth) {
+		ui::Point blockSize = { 0, 0 };
+		for (const auto &component : components)
+		{
+			blockSize.X = std::max(blockSize.X, component->Position.X + component->Size.X);
+			blockSize.Y = std::max(blockSize.Y, component->Position.Y + component->Size.Y);
+		}
 
 		// New row, offset x position to ensure entire row is centered
 		if (xPos == 0)
 			xPos = (panelWidth % blockSize.X) / 2;
-		components.AddOffset({ xPos, yPos });
+		for (const auto &component : components)
+			component->Position += ui::Point({ xPos, yPos });
 
 		xPos += blockSize.X;
 		nextY =  std::max(nextY, yPos + blockSize.Y);
@@ -47,6 +54,9 @@ Credits::Credits():
 			yPos = nextY + 8;
 			row++;
 		}
+
+		for (const auto &component : components)
+			scrollPanel->AddChild(component);
 	};
 
 	// Add header and separator for each section of credits
@@ -79,9 +89,8 @@ Credits::Credits():
 	for (auto &item : GitHub)
 	{
 		ByteString username = item.asString();
-		auto components = AddCredit(username.FromUtf8(), "", Small, GetGithubCommitsUri(username), false, grayscale);
+		auto components = AddCredit(username.FromUtf8(), "", Small, "", false, grayscale);
 		organizeComponents(components, scrollPanel->Size.X);
-		components.AddToPanel(scrollPanel);
 		if (grayscale > 180)
 			grayscale--;
 	}
@@ -99,7 +108,6 @@ Credits::Credits():
 		{
 			auto components = AddCredit(username.FromUtf8(), "", Large, GetProfileUri(username), true);
 			organizeComponents(components, scrollPanel->Size.X);
-			components.AddToPanel(scrollPanel);
 		}
 	}
 
@@ -115,7 +123,6 @@ Credits::Credits():
 		{
 			auto components = AddCredit(username.FromUtf8(), "", Small, "", true);
 			organizeComponents(components, scrollPanel->Size.X);
-			components.AddToPanel(scrollPanel);
 		}
 	}
 
@@ -131,7 +138,6 @@ Credits::Credits():
 
 		auto components = AddCredit(realname.FromUtf8(), message.FromUtf8(), row == 0 ? Half : Small, "");
 		organizeComponents(components, scrollPanel->Size.X);
-		components.AddToPanel(scrollPanel);
 	}
 
 
@@ -145,7 +151,7 @@ Credits::Credits():
 	AddComponent(closeButton);
 }
 
-ui::ComponentSet Credits::AddCredit(const String &name, const String &subheader, const CreditSize size,
+std::vector<ui::Component *> Credits::AddCredit(const String &name, const String &subheader, const CreditSize size,
 	const ByteString &uri, const bool includeAvatar, const int grayscale)
 {
 	std::vector<ui::Component *> components;
@@ -190,17 +196,12 @@ ui::ComponentSet Credits::AddCredit(const String &name, const String &subheader,
 		components.push_back(subheaderLabel);
 	}
 
-	return ui::ComponentSet(components);
+	return components;
 }
 
 ByteString Credits::GetProfileUri(const ByteString &username)
 {
 	return "https://powdertoy.co.uk/User.html?Name=" + username;
-}
-
-ByteString Credits::GetGithubCommitsUri(const ByteString &username)
-{
-	return "https://github.com/The-Powder-Toy/The-Powder-Toy/commits?author=" + username;
 }
 
 String Credits::GetRichLabelText(const ByteString &uri, const String &message)
