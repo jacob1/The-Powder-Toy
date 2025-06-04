@@ -194,6 +194,11 @@ static int update(UPDATE_FUNC_ARGS)
 			case PT_BASE:
 				if (parts[ID(r)].temp > (50 + 273.15) && sim->rng.chance(1, 35))
 					sim->create_part(ID(r), x+rx, y+ry, PT_LRBD);
+			case PT_PAPR:
+				if (sim->rng.chance(1, 20))
+				{
+					sim->create_part(ID(r), x+rx, y+ry, PT_INVIS);
+				}
 				break;
 			default:
 				break;
