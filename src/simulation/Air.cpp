@@ -463,7 +463,7 @@ void Air::UpdateAir()
 			{
 				auto dwx = (std::abs(vorticity(this, y, x + 1)) - std::abs(vorticity(this, y, x - 1))) * 0.5f;
 				auto dwy = (std::abs(vorticity(this, y + 1, x)) - std::abs(vorticity(this, y - 1, x))) * 0.5f;
-				auto norm = std::sqrt(dwx * dwx + dwy * dwy);
+				auto norm = std::hypot(dwx, dwy);
 				auto w = vorticity(this, y, x);
 
 				dx += vorticityCoeff / 5.0f * dwy / (norm + 0.001f) * w;
@@ -639,7 +639,9 @@ float Air::vorticity(const Air * air, int y, int x)
 	if (x > 1 && x < XCELLS - 2 && y > 1 && y < YCELLS - 2)
 	{
 		// dvy/dx - dvx/dy
-		return (air->vy[y][x + 1] - air->vy[y][x - 1] - (air->vx[y + 1][x] - air->vx[y - 1][x])) * 0.5f;
+		auto dvydx = (air->blockair[y][x] || air->blockair[y][x+1] || air->blockair[y][x-1]) ? 0.0f : air->vy[y][x+1] - air->vy[y][x-1];
+		auto dvxdy = (air->blockair[y][x] || air->blockair[y+1][x] || air->blockair[y-1][x]) ? 0.0f : air->vx[y+1][x] - air->vx[y-1][x];
+		return (dvydx - dvxdy)*0.5f;
 	}
 	else
 	{
