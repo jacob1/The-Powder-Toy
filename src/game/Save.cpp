@@ -3111,6 +3111,12 @@ void Save::Transform(matrix2d transform, vector2d translate, vector2d translateR
 				}
 			}
 			pressureNew[ny][nx] = pressure[y][x];
+			{
+				vector2d vel = v2d_new(velocityX[y][x], velocityY[y][x]);
+				vel = m2d_multiply_v2d(transform, vel);
+				velocityXNew[ny][nx] = vel.x;
+				velocityYNew[ny][nx] = vel.y;
+			}
 			velocityXNew[ny][nx] = velocityX[y][x];
 			velocityYNew[ny][nx] = velocityY[y][x];
 			ambientHeatNew[ny][nx] = ambientHeat[y][x];
