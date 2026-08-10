@@ -109,7 +109,7 @@ void SetRightHudText(Simulation * sim, int x, int y)
 				}
 				else if (currentHud[50] && currentHud[11] && underType == PT_FILT)
 				{
-					const char* filtModes[] = { "set color", "AND", "OR", "subtract color", "red shift", "blue shift", "no effect", "XOR", "NOT", "PHOT scatter", "variable red shift", "variable blue shift" };
+					const char* filtModes[] = { "set color", "AND", "OR", "AND-NOT", "red shift", "blue shift", "no effect", "XOR", "NOT", "PHOT scatter", "variable red shift", "variable blue shift" };
 					if (parts[underID].tmp >= 0 && parts[underID].tmp <= 11)
 						nametext << "FILT (" << filtModes[parts[underID].tmp] << ")";
 					else
