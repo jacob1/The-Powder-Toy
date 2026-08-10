@@ -27,11 +27,11 @@ int BOMB_update(UPDATE_FUNC_ARGS)
 				int rt = TYP(r);
 				if (rt!=PT_BOMB && rt!=PT_EMBR && rt!=PT_VIBR && rt!=PT_BCLN && !(sim->elements[rt].Properties&PROP_INDESTRUCTIBLE) && !(sim->elements[rt].Properties&PROP_CLONE))
 				{
-					int rad = 8;
+					const int rad = 8;
 					sim->part_kill(i);
 					for (int nxj = -rad; nxj <= rad; nxj++)
 						for (int nxi = -rad; nxi <= rad; nxi++)
-							if ((std::pow((float)nxi,2.0f))/(std::pow((float)rad,2.0f))+(std::pow((float)nxj,2.0f))/(std::pow((float)rad,2.0f))<=1)
+							if ((nxi * nxi + nxj * nxj) <= rad * rad)
 							{
 								int ynxj = y + nxj, xnxi = x + nxi;
 
@@ -55,9 +55,16 @@ int BOMB_update(UPDATE_FUNC_ARGS)
 							}
 					for (int nxj = -(rad+1); nxj <= (rad+1); nxj++)
 						for (int nxi = -(rad+1); nxi <= (rad+1); nxi++)
-							if ((std::pow((float)nxi,2.0f))/(std::pow((float)(rad+1),2.0f))+(std::pow((float)nxj,2.0f))/(std::pow((float)(rad+1),2.0f))<=1 && !TYP(pmap[y+nxj][x+nxi]))
+							if ((nxi * nxi + nxj * nxj) <= (rad + 1) * (rad + 1))
 							{
-								int nb = sim->part_create(-3, x+nxi, y+nxj, PT_EMBR);
+								int ynxj = y + nxj, xnxi = x + nxi;
+								if ((ynxj < 0) || (ynxj >= YRES) || (xnxi < 0) || (xnxi >= XRES))
+									continue;
+
+								if (TYP(pmap[ynxj][xnxi]))
+									continue;
+
+								int nb = sim->part_create(-3, xnxi, ynxj, PT_EMBR);
 								if (nb != -1)
 								{
 									parts[nb].tmp = 0;
