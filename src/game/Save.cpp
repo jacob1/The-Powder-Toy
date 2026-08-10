@@ -958,7 +958,7 @@ void Save::ParseSaveOPS()
 	{
 		unsigned int j = 0;
 		unsigned int i, i2;
-		if (blockW * blockH > pressDataLen)
+		if (blockW * blockH * 2 > pressDataLen)
 			throw ParseException("Not enough pressure data");
 		hasPressure = true;
 		for (unsigned int x = 0; x < blockW; x++)
@@ -977,7 +977,7 @@ void Save::ParseSaveOPS()
 	{
 		unsigned int j = 0;
 		unsigned int i, i2;
-		if (blockW * blockH > vxDataLen)
+		if (blockW * blockH * 2 > vxDataLen)
 			throw ParseException("Not enough vx data");
 		for (unsigned int x = 0; x < blockW; x++)
 		{
@@ -995,7 +995,7 @@ void Save::ParseSaveOPS()
 	{
 		unsigned int j = 0;
 		unsigned int i, i2;
-		if (blockW * blockH > vyDataLen)
+		if (blockW * blockH * 2 > vyDataLen)
 			throw ParseException("Not enough vy data");
 		for (unsigned int x = 0; x < blockW; x++)
 		{
@@ -1012,7 +1012,7 @@ void Save::ParseSaveOPS()
 	if (ambientData)
 	{
 		unsigned int tempTemp, j = 0;
-		if (blockW * blockH > ambientDataLen)
+		if (blockW * blockH * 2 > ambientDataLen)
 			throw ParseException("Not enough ambient heat data");
 		hasAmbientHeat = true;
 		for (unsigned int x = 0; x < blockW; x++)
@@ -1673,7 +1673,7 @@ void Save::ParseSavePSv()
 		{
 			if (ver >= 44)
 			{
-				if (pos >= size)
+				if (pos + 1 >= size)
 					throw ParseException("Ran past .life data buffer");
 				if (i > 0 && i <= NPART)
 				{
@@ -1702,7 +1702,7 @@ void Save::ParseSavePSv()
 			int i = particleIDMap[j];
 			if (i)
 			{
-				if (pos >= size)
+				if (pos + 1 >= size)
 					throw ParseException("Ran past .tmp data buffer");
 				if (i > 0 && i <= NPART)
 				{
@@ -1829,6 +1829,10 @@ void Save::ParseSavePSv()
 						if (new_format)
 						{
 							int temp = (data[pos++])<<8;
+							if (pos >= size)
+							{
+								throw ParseException("Not enough data at line " MTOS(__LINE__) " in " MTOS(__FILE__));
+							}
 							temp |= (data[pos++]);
 							// Fix PUMP saved at 0, so that it loads at 0.
 							if (particles[i-1].type == PT_PUMP)
@@ -1851,6 +1855,10 @@ void Save::ParseSavePSv()
 					pos++;
 					if (new_format)
 					{
+						if (pos >= size)
+						{
+							throw ParseException("Not enough data at line " MTOS(__LINE__) " in " MTOS(__FILE__));
+						}
 						pos++;
 					}
 				}
