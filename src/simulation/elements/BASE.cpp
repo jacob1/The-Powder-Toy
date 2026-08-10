@@ -84,28 +84,47 @@ int BASE_update(UPDATE_FUNC_ARGS)
 						{
 							int saturh = parts[i].life / 2;
 
-							sim->part_change_type(ID(r), x + rx, y + ry, PT_BASE);
+							sim->part_create_preserve_energy(ID(r), x + rx, y + ry, PT_BASE);
 							parts[ID(r)].life = saturh;
 							parts[ID(r)].temp += ((float)saturh) / 10.0f;
 							parts[i].life -= saturh;
 						}
 					} // Base neutralizes acid
-					else if (rt == PT_ACID && parts[i].life >= parts[ID(r)].life)
+					else if (rt == PT_ACID)
 					{
-						sim->part_change_type(i, x, y, PT_SLTW);
-						sim->part_change_type(ID(r), x + rx, y + ry, PT_SLTW);
-						return 1;
+						if (parts[ID(r)].life > 50 && parts[i].life > 0)
+						{
+							parts[ID(r)].life--;
+							parts[i].life--;
+						}
+
+						if (parts[ID(r)].life <= 50)
+							sim->part_create_preserve_energy(ID(r), x+rx, y+ry, PT_SLTW);
+						if (parts[i].life <= 0)
+						{
+							sim->part_create_preserve_energy(i, x, y, PT_SLTW);
+							return 1;
+						}
 					} // Base neutralizes CAUS
-					else if (rt == PT_CAUS && parts[i].life >= parts[ID(r)].life)
+					else if (rt == PT_CAUS)
 					{
-						sim->part_change_type(i, x, y, PT_SLTW);
-						sim->part_kill(ID(r));
-						return 1;
+						if (parts[ID(r)].life > 50 && parts[i].life > 0)
+						{
+							parts[ID(r)].life--;
+							parts[i].life--;
+						}
+
+						if (parts[ID(r)].life <= 50)
+							sim->part_kill(ID(r));
+						if (parts[i].life <= 0)
+						{
+							sim->part_create_preserve_energy(i, x, y, PT_SLTW);
+							return 1;
+						}
 					} // BASE + OIL = SOAP
 					else if (parts[i].life >= 70 && rt == PT_OIL)
 					{
-						sim->part_change_type(i, x, y, PT_SOAP);
-						parts[i].tmp = parts[i].tmp2 = parts[i].ctype = 0;
+						sim->part_create_preserve_energy(i, x, y, PT_SOAP);
 						sim->part_kill(ID(r));
 						return 1;
 					} // BASE + GOO = GEL
@@ -121,17 +140,14 @@ int BASE_update(UPDATE_FUNC_ARGS)
 					} // BASE + Molden ROCK = MERC
 					else if (rt == PT_LAVA && parts[ID(r)].ctype == PT_ROCK && pres >= 10.0f && RNG::Ref().chance(1, 1000))
 					{
-						sim->part_change_type(i, x, y, PT_MERC);
-						parts[i].life = 0;
-						parts[i].tmp = 10;
-
+						sim->part_create_preserve_energy(i, x, y, PT_MERC);
 						sim->part_kill(ID(r));
 						return 1;
 					} // Base rusts conductive solids
 					else if (parts[i].life >= 10 &&
 							 (sim->elements[rt].Properties & (TYPE_SOLID|PROP_CONDUCTS)) == (TYPE_SOLID|PROP_CONDUCTS) && RNG::Ref().chance(1, 10))
 					{
-						sim->part_change_type(ID(r), x + rx, y + ry, PT_BMTL);
+						sim->part_create_preserve_energy(ID(r), x + rx, y + ry, PT_BMTL);
 						parts[ID(r)].tmp = RNG::Ref().between(20, 29);
 						parts[i].life--;
 						//Draw a spark effect
