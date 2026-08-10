@@ -1280,26 +1280,24 @@ int simulation_resetTemp(lua_State * l)
 int simulation_resetPressure(lua_State * l)
 {
 	int aCount = lua_gettop(l), width = XRES/CELL, height = YRES/CELL;
-	int x1 = abs(luaL_optint(l, 1, 0));
-	int y1 = abs(luaL_optint(l, 2, 0));
+	int x1 = luaL_optint(l, 1, 0);
+	int y1 = luaL_optint(l, 2, 0);
 	if (aCount > 2)
 	{
-		width = abs(luaL_optint(l, 3, XRES/CELL));
-		height = abs(luaL_optint(l, 4, YRES/CELL));
+		width = luaL_optint(l, 3, XRES/CELL);
+		height = luaL_optint(l, 4, YRES/CELL);
 	}
 	else if (aCount)
 	{
 		width = 1;
 		height = 1;
 	}
-	if(x1 > (XRES/CELL)-1)
-		x1 = (XRES/CELL)-1;
-	if(y1 > (YRES/CELL)-1)
-		y1 = (YRES/CELL)-1;
-	if(x1+width > (XRES/CELL)-1)
-		width = (XRES/CELL)-x1;
-	if(y1+height > (YRES/CELL)-1)
-		height = (YRES/CELL)-y1;
+
+	x1 = std::clamp(x1, 0, XCELLS - 1);
+	y1 = std::clamp(y1, 0, YCELLS - 1);
+	width = std::clamp(width, 0, XCELLS - x1);
+	height = std::clamp(height, 0, YCELLS - y1);
+
 	for (int nx = x1; nx<x1+width; nx++)
 		for (int ny = y1; ny<y1+height; ny++)
 		{
@@ -2260,18 +2258,16 @@ int simulation_resetSpark(lua_State * l)
 
 int simulation_resetVelocity(lua_State * l)
 {
-	int x1 = abs(luaL_optint(l, 1, 0));
-	int y1 = abs(luaL_optint(l, 2, 0));
-	int width = abs(luaL_optint(l, 3, XRES/CELL));
-	int height = abs(luaL_optint(l, 4, YRES/CELL));
-	if (x1 > (XRES/CELL)-1)
-		x1 = (XRES/CELL)-1;
-	if (y1 > (YRES/CELL)-1)
-		y1 = (YRES/CELL)-1;
-	if (x1+width > (XRES/CELL)-1)
-		width = (XRES/CELL)-x1;
-	if (y1+height > (YRES/CELL)-1)
-		height = (YRES/CELL)-y1;
+	int x1 = luaL_optint(l, 1, 0);
+	int y1 = luaL_optint(l, 2, 0);
+	int width = luaL_optint(l, 3, XRES/CELL);
+	int height = luaL_optint(l, 4, YRES/CELL);
+
+	x1 = std::clamp(x1, 0, XCELLS - 1);
+	y1 = std::clamp(y1, 0, YCELLS - 1);
+	width = std::clamp(width, 0, XCELLS - x1);
+	height = std::clamp(height, 0, YCELLS - y1);
+
 	for (int nx = x1; nx < x1 + width; nx++)
 		for (int ny = y1; ny < y1 + height; ny++)
 		{
