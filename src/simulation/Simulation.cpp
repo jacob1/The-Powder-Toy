@@ -1052,7 +1052,8 @@ int Simulation::part_create(int p, int x, int y, int t, int v)
 			(*(elements[oldType].Func_ChangeType))(this, p, oldX, oldY, oldType, t);
 		}
 		if (oldType) elementCount[oldType]--;
-		pmap_remove(p, oldX, oldY);
+		if (InBounds(oldX, oldY))
+			pmap_remove(p, oldX, oldY);
 		i = p;
 	}
 	else // Dunno, act like it was p=-3
