@@ -3167,6 +3167,8 @@ int Simulation::CreateTool(int x, int y, int brushX, int brushY, int tool, float
 			return 0;
 
 		int distance = (int)(std::pow(strength, .5f) * 10);
+		if (distance <= 0)
+			return 0;
 
 		if (!(elements[TYP(thisPart)].Properties & (TYPE_PART | TYPE_LIQUID | TYPE_GAS)))
 			return 0;
