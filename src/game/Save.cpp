@@ -944,7 +944,7 @@ void Save::ParseSaveOPS()
 				{
 					if (j+1 >= fanDataLen)
 					{
-						fprintf(stderr, "Not enough fan data\n");
+						throw ParseException("Not enough fan data");
 					}
 					fanVelX[blockY+y][blockX+x] = (fanData[j++]-127.0f)/64.0f;
 					fanVelY[blockY+y][blockX+x] = (fanData[j++]-127.0f)/64.0f;
