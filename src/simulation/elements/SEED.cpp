@@ -62,8 +62,9 @@ int SEED_update(UPDATE_FUNC_ARGS)
 
 		int up = (down+4)%8;
 
-		// Check if there's SAND under the seed particle and empty space above
-		if (TYP(pmap[y+dir3x3[down][1]][x+dir3x3[down][0]]) == PT_SAND && !TYP(pmap[y+dir3x3[up][1]][x+dir3x3[up][0]]))
+		// Check if there's SAND/SPNG under the seed particle and empty space above
+		unsigned int downPart = pmap[y+dir3x3[down][1]][x+dir3x3[down][0]];
+		if ((TYP(downPart) == PT_SAND || TYP(downPart) == PT_SPNG) && !TYP(pmap[y+dir3x3[up][1]][x+dir3x3[up][0]]))
 		{
 			if (parts[i].life > 200)
 			{
@@ -73,11 +74,13 @@ int SEED_update(UPDATE_FUNC_ARGS)
 				parts[i].ctype &= ~((7 << PLNT_DIR) | (3 << PLNT_PHASE)); // Clear direction and phase
 				parts[i].ctype |= ((up & 7) << PLNT_DIR) | 1; // Set initial growth direction and growth bit
 				parts[i].life = 15*water; // Make the first branch longer
+
+				return 1;
 			}
 			else
+			{
 				parts[i].life++;
-
-			return 1;
+			}
 		}
 		else
 			parts[i].life = 0; // Reset growth counter if we lost contact with ground
@@ -121,6 +124,14 @@ int SEED_update(UPDATE_FUNC_ARGS)
 					{
 						sim->part_kill(ID(r));
 						water--;
+						parts[i].life = 0;
+					}
+					break;
+				case PT_SPNG: // Allow absorbing some water from SPNG
+					if (water < 15 && parts[ID(r)].life > 0)
+					{
+						parts[ID(r)].life--;
+						water++;
 						parts[i].life = 0;
 					}
 					break;
