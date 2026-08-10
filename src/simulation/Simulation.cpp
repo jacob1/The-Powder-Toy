@@ -1746,31 +1746,12 @@ bool Simulation::UpdateParticle(int i)
 		if (t == PT_GAS || t == PT_NBLE)
 		{
 			if (air->pv[y/CELL][x/CELL] < 3.5f)
-				air->pv[y/CELL][x/CELL] += elements[t].HotAir*(3.5f - air->pv[y/CELL][x/CELL]);
-			if (y+CELL < YRES && air->pv[y/CELL+1][x/CELL] < 3.5f)
-				air->pv[y/CELL+1][x/CELL] += elements[t].HotAir*(3.5f - air->pv[y/CELL+1][x/CELL]);
-			if (x+CELL < XRES)
-			{
-				if (air->pv[y/CELL][x/CELL+1] < 3.5f)
-					air->pv[y/CELL][x/CELL+1] += elements[t].HotAir*(3.5f - air->pv[y/CELL][x/CELL+1]);
-				if (y+CELL<YRES && air->pv[y/CELL+1][x/CELL+1] < 3.5f)
-					air->pv[y/CELL+1][x/CELL+1] += elements[t].HotAir*(3.5f - air->pv[y/CELL+1][x/CELL+1]);
-			}
+				air->pv[y/CELL][x/CELL] += 4.0f * elements[t].HotAir*(3.5f - air->pv[y/CELL][x/CELL]);
 		}
 		//add the hotair variable to the pressure map, like black hole, or white hole.
 		else
 		{
-			float value = elements[t].HotAir;
-			value = restrict_flt(value, -256.0f, 256.0f);
-			air->pv[y/CELL][x/CELL] += value;
-			if (y+CELL < YRES)
-				air->pv[y/CELL+1][x/CELL] += value;
-			if (x+CELL < XRES)
-			{
-				air->pv[y/CELL][x/CELL+1] += value;
-				if (y+CELL < YRES)
-					air->pv[y/CELL+1][x/CELL+1] += value;
-			}
+			air->pv[y/CELL][x/CELL] += 4.0f * elements[t].HotAir;
 		}
 	}
 	float pGravX = 0, pGravY = 0;
