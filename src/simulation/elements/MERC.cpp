@@ -19,11 +19,12 @@ int MERC_update(UPDATE_FUNC_ARGS)
 {
 	// Max number of particles that can be condensed into one
 	const int absorbScale = 10000;
-	// Obscure division by 0 fix
-	if (parts[i].temp + 1 == 0)
-		parts[i].temp = 0;
+	parts[i].temp = restrict_flt(parts[i].temp, MIN_TEMP, MAX_TEMP);
 	int maxtmp = ((absorbScale/(parts[i].temp + 1))-1);
-	if (RNG::Ref().chance(absorbScale % ((int)parts[i].temp + 1), parts[i].temp + 1))
+	int it1 = int(parts[i].temp) + 1;
+	if (it1 < 1)
+		it1 = 1;
+	if (RNG::Ref().chance(absorbScale % it1, it1))
 		maxtmp++;
 	if (parts[i].tmp < 0)
 		parts[i].tmp = 0;
