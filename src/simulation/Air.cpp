@@ -175,7 +175,7 @@ void Air::UpdateAirHeat(Simulation *sim)
 				{
 					tx += stepX;
 					ty += stepY;
-					if (blockairh[(int)(ty+0.5f)][(int)(tx+0.5f)]&0x8)
+					if (!InCellBounds(int(tx+0.5f), int(ty+0.5f)) || blockairh[(int)(ty+0.5f)][(int)(tx+0.5f)]&0x8)
 					{
 						tx -= stepX;
 						ty -= stepY;
@@ -193,7 +193,7 @@ void Air::UpdateAirHeat(Simulation *sim)
 			auto j = (int)ty;
 			tx -= i;
 			ty -= j;
-			if (!(blockairh[y][x]&0x8) && i>=0 && i<XCELLS-1 && j>=0 && j<YCELLS-1)
+			if (!(blockairh[y][x]&0x8) && i>=0 && i<XCELLS-1 && j>=0 && j<YCELLS-1 && tx >= 0.0f && ty >= 0.0f)
 			{
 				auto odh = dh;
 				dh *= 1.0f - AIR_VADV;
@@ -422,7 +422,7 @@ void Air::UpdateAir()
 				{
 					txf += stepX;
 					tyf += stepY;
-					if (blockair[(int)(tyf+0.5f)][(int)(txf+0.5f)])
+					if (!InCellBounds((int)(tyf+0.5f), (int)(txf+0.5f)) || blockair[(int)(tyf+0.5f)][(int)(txf+0.5f)])
 					{
 						txf -= stepX;
 						tyf -= stepY;
@@ -440,7 +440,7 @@ void Air::UpdateAir()
 			tyi = (int)tyf;
 			txf -= txi;
 			tyf -= tyi;
-			if (!blockair[y][x] && txi >= 2 && txi < XRES/CELL-3 && tyi >= 2 && tyi < YRES/CELL-3)
+			if (!blockair[y][x] && txi >= 2 && txi < XRES/CELL-3 && tyi >= 2 && tyi < YRES/CELL-3 && txf >= 0.0f && tyf >= 0.0f)
 			{
 				dx *= 1.0f - AIR_VADV;
 				dy *= 1.0f - AIR_VADV;

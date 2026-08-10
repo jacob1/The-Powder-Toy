@@ -99,6 +99,11 @@ public:
 	int GetConvectionMode();
 	void SetConvectionMode(int convectionMode);
 	void SetTempConvectionMode(int convectionMode);
+
+	bool InCellBounds(int x, int y)
+	{
+		return (x >= 0 && y >= 0 && x < XRES / CELL && y < YRES / CELL);
+	}
 };
 
 #endif
