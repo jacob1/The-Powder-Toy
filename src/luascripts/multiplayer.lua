@@ -15,10 +15,6 @@ local modulepack  = require("modulepack")
 local common_util = require("tptmp.common.util")
 
 local loadtime_error
-local tptVersion = { tpt.version.major, tpt.version.minor }
-if tpt.version.upstreamMajor then
-	tptVersion = { tpt.version.upstreamMajor, tpt.version.upstreamMinor }
-end
 local http = rawget(_G, "http")
 local tools = rawget(_G, "tools")
 local socket = rawget(_G, "socket")
@@ -30,7 +26,7 @@ elseif sim.YRES ~= 384 then -- * Required by lots of code dealing with positions
 	loadtime_error = "XRES is not 384, try using the official version of the game"
 elseif sim.PMAPBITS >= 13 then -- * Required by how non-element tools are encoded (extended tool IDs, XIDs).
 	loadtime_error = "PMAPBITS is too large, try using the official version of the game"
-elseif not (tpt.version and tpt.version.upstreamBuild and tpt.version.upstreamBuild >= 356) then
+elseif not (tpt.version and tpt.version.upstreamBuild and tpt.version.upstreamBuild >= 400) then
 	loadtime_error = "game version not supported, try updating the game"
 elseif not rawget(_G, "bit") then
 	loadtime_error = "no bit API, try updating the game"
@@ -38,7 +34,7 @@ elseif not http then
 	loadtime_error = "no http API, try updating the game"
 elseif not tools then
 	loadtime_error = "no tools API, try updating the game"
-elseif not socket or (not socket.tcp and not socket.web) then
+elseif not socket or not socket.tcp then -- TODO: check for socket.web once it actually works
 	loadtime_error = "no socket API, try updating the game"
 elseif socket.bind then
 	loadtime_error = "outdated socket API, try updating the game"
@@ -928,14 +924,25 @@ local simstates = {
 		shift = 13,
 		size = 2,
 	},
+	{
+		format = "Air heat convection mode set to %s by %s",
+		states = { "none", "legacy", "Boussinesq" },
+		func = sim.convectionMode,
+		shift = 16,
+		size = 2,
+	},
 }
 function client_i:handle_simstate_38_()
 	local member = self:member_prefix_()
-	local lo, hi = self:read_bytes_(2)
+	local b1, b2, b3 = self:read_bytes_(3)
 	local temp = self:read_24be_()
+	local pres = self:read_24be_()
+	local vort = self:read_24be_()
 	local gravx = self:read_24be_()
 	local gravy = self:read_24be_()
-	local bits = bit.bor(lo, bit.lshift(hi, 8))
+	local aairx = self:read_24be_()
+	local aairy = self:read_24be_()
+	local bits = bit.bor(b1, bit.lshift(b2, 8), bit.lshift(b3, 16))
 	for i = 1, #simstates do
 		local desc = simstates[i]
 		local value = bit.band(bit.rshift(bits, desc.shift), bit.lshift(1, desc.size) - 1)
@@ -951,6 +958,14 @@ function client_i:handle_simstate_38_()
 		local set = util.ambient_air_temp(temp)
 		self.log_event_func_(colours.commonstr.event .. ("Ambient air temperature set to %.2f by %s"):format(set, member.formatted_nick))
 	end
+	if util.ambient_air_pres() ~= pres then
+		local set = util.ambient_air_pres(pres)
+		self.log_event_func_(colours.commonstr.event .. ("Ambient air pressure set to %.2f by %s"):format(set, member.formatted_nick))
+	end
+	if util.vorticity_coeff() ~= vort then
+		local set = util.vorticity_coeff(vort)
+		self.log_event_func_(colours.commonstr.event .. ("Vorticity coefficient set to %.2f by %s"):format(set, member.formatted_nick))
+	end
 	do
 		local cgx, cgy = util.custom_gravity()
 		if cgx ~= gravx or cgy ~= gravy then
@@ -958,6 +973,13 @@ function client_i:handle_simstate_38_()
 			if sim.gravityMode() == 3 then
 				self.log_event_func_(colours.commonstr.event .. ("Custom gravity set to (%+.2f, %+.2f) by %s"):format(setx, sety, member.formatted_nick))
 			end
+		end
+	end
+	do
+		local cax, cay = util.ambient_air_vel()
+		if cax ~= aairx or cay ~= aairy then
+			local setx, sety = util.ambient_air_vel(aairx, aairy)
+			self.log_event_func_(colours.commonstr.event .. ("Ambient air velocity set to (%+.2f, %+.2f) by %s"):format(setx, sety, member.formatted_nick))
 		end
 	end
 	self.profile_:sample_simstate()
@@ -1413,25 +1435,50 @@ function client_i:send_selecttool(idx, xtype)
 	self:write_flush_()
 end
 
-function client_i:send_simstate(ss_p, ss_h, ss_u, ss_n, ss_w, ss_g, ss_a, ss_e, ss_y, ss_t, ss_r, ss_s)
+function client_i:send_simstate(
+	simstate_paused,
+	simstate_heat,
+	simstate_ambientheat,
+	simstate_newtonian,
+	simstate_watereq,
+	simstate_gravmode,
+	simstate_airmode,
+	simstate_edgemode,
+	simstate_convmode,
+	simstate_prettypowd,
+	simstate_ambairtemp,
+	simstate_ambairpres,
+	simstate_vortcoeff,
+	simstate_cgravx,
+	simstate_cgravy,
+	simstate_aairvx,
+	simstate_aairvy
+)
 	self:write_("\38")
 	local toggles = bit.bor(
-		           ss_p    ,
-		bit.lshift(ss_h, 1),
-		bit.lshift(ss_u, 2),
-		bit.lshift(ss_n, 3),
-		bit.lshift(ss_w, 4),
-		bit.lshift(ss_y, 5)
+				   simstate_paused         ,
+		bit.lshift(simstate_heat       , 1),
+		bit.lshift(simstate_ambientheat, 2),
+		bit.lshift(simstate_newtonian  , 3),
+		bit.lshift(simstate_watereq    , 4),
+		bit.lshift(simstate_prettypowd , 5)
 	)
 	local multis = bit.bor(
-		           ss_g    ,
-		bit.lshift(ss_a, 2),
-		bit.lshift(ss_e, 5)
+				   simstate_gravmode    ,
+		bit.lshift(simstate_airmode , 2),
+		bit.lshift(simstate_edgemode, 5)
 	)
-	self:write_bytes_(toggles, multis)
-	self:write_24be_(ss_t)
-	self:write_24be_(ss_r)
-	self:write_24be_(ss_s)
+	local multis2 = bit.bor(
+				   simstate_convmode
+	)
+	self:write_bytes_(toggles, multis, multis2)
+	self:write_24be_(simstate_ambairtemp)
+	self:write_24be_(simstate_ambairpres)
+	self:write_24be_(simstate_vortcoeff )
+	self:write_24be_(simstate_cgravx    )
+	self:write_24be_(simstate_cgravy    )
+	self:write_24be_(simstate_aairvx    )
+	self:write_24be_(simstate_aairvy    )
 	self:write_flush_()
 end
 
@@ -2089,7 +2136,7 @@ end
 modules["tptmp.client.config"] = function()
 local common_config = require("tptmp.common.config")
 
-local versionstr = "v2.2.7"
+local versionstr = "v2.2.9"
 
 local config = {
 	-- ***********************************************************************
@@ -3126,7 +3173,25 @@ end
 
 function profile_i:simstate_sync()
 	if self.registered_func_() then
-		self.client_:send_simstate(self.ss_p_, self.ss_h_, self.ss_u_, self.ss_n_, self.ss_w_, self.ss_g_, self.ss_a_, self.ss_e_, self.ss_y_, self.ss_t_, self.ss_r_, self.ss_s_)
+		self.client_:send_simstate(
+			self.simstate_paused_,
+			self.simstate_heat_,
+			self.simstate_ambientheat_,
+			self.simstate_newtonian_,
+			self.simstate_watereq_,
+			self.simstate_gravmode_,
+			self.simstate_airmode_,
+			self.simstate_edgemode_,
+			self.simstate_convmode_,
+			self.simstate_prettypowd_,
+			self.simstate_ambairtemp_,
+			self.simstate_ambairpres_,
+			self.simstate_vortcoeff_,
+			self.simstate_cgravx_,
+			self.simstate_cgravy_,
+			self.simstate_aairvx_,
+			self.simstate_aairvy_
+		)
 	end
 end
 
@@ -3297,41 +3362,55 @@ function profile_i:post_event_check_()
 end
 
 function profile_i:sample_simstate()
-	local ss_p = tpt.set_pause()
-	local ss_h = tpt.heat()
-	local ss_u = tpt.ambient_heat()
-	local ss_n = tpt.newtonian_gravity()
-	local ss_w = sim.waterEqualisation()
-	local ss_g = sim.gravityMode()
-	local ss_a = sim.airMode()
-	local ss_e = sim.edgeMode()
-	local ss_y = sim.prettyPowders()
-	local ss_t = util.ambient_air_temp()
-	local ss_r, ss_s = util.custom_gravity()
-	if self.ss_p_ ~= ss_p or
-	   self.ss_h_ ~= ss_h or
-	   self.ss_u_ ~= ss_u or
-	   self.ss_n_ ~= ss_n or
-	   self.ss_w_ ~= ss_w or
-	   self.ss_g_ ~= ss_g or
-	   self.ss_a_ ~= ss_a or
-	   self.ss_e_ ~= ss_e or
-	   self.ss_y_ ~= ss_y or
-	   self.ss_t_ ~= ss_t or
-	   self.ss_r_ ~= ss_r or
-	   self.ss_s_ ~= ss_s then
-		self.ss_p_ = ss_p
-		self.ss_h_ = ss_h
-		self.ss_u_ = ss_u
-		self.ss_n_ = ss_n
-		self.ss_w_ = ss_w
-		self.ss_g_ = ss_g
-		self.ss_a_ = ss_a
-		self.ss_e_ = ss_e
-		self.ss_y_ = ss_y
-		self.ss_t_ = ss_t
-		self.ss_r_ = ss_r
-		self.ss_s_ = ss_s
+	local simstate_paused      = tpt.set_pause()
+	local simstate_heat        = tpt.heat()
+	local simstate_ambientheat = tpt.ambient_heat()
+	local simstate_newtonian   = tpt.newtonian_gravity()
+	local simstate_watereq     = sim.waterEqualisation()
+	local simstate_gravmode    = sim.gravityMode()
+	local simstate_airmode     = sim.airMode()
+	local simstate_edgemode    = sim.edgeMode()
+	local simstate_convmode    = sim.convectionMode()
+	local simstate_prettypowd  = sim.prettyPowders()
+	local simstate_ambairtemp  = util.ambient_air_temp()
+	local simstate_ambairpres  = util.ambient_air_pres()
+	local simstate_vortcoeff   = util.vorticity_coeff()
+	local simstate_cgravx, simstate_cgravy = util.custom_gravity()
+	local simstate_aairvx, simstate_aairvy = util.ambient_air_vel()
+	if self.simstate_paused_      ~= simstate_paused      or
+	   self.simstate_heat_        ~= simstate_heat        or
+	   self.simstate_ambientheat_ ~= simstate_ambientheat or
+	   self.simstate_newtonian_   ~= simstate_newtonian   or
+	   self.simstate_watereq_     ~= simstate_watereq     or
+	   self.simstate_gravmode_    ~= simstate_gravmode    or
+	   self.simstate_airmode_     ~= simstate_airmode     or
+	   self.simstate_edgemode_    ~= simstate_edgemode    or
+	   self.simstate_convmode_    ~= simstate_convmode    or
+	   self.simstate_prettypowd_  ~= simstate_prettypowd  or
+	   self.simstate_ambairtemp_  ~= simstate_ambairtemp  or
+	   self.simstate_ambairpres_  ~= simstate_ambairpres  or
+	   self.simstate_vortcoeff_   ~= simstate_vortcoeff   or
+	   self.simstate_cgravx_      ~= simstate_cgravx      or
+	   self.simstate_cgravy_      ~= simstate_cgravy      or
+	   self.simstate_aairvx_      ~= simstate_aairvx      or
+	   self.simstate_aairvy_      ~= simstate_aairvy      then
+		self.simstate_paused_      = simstate_paused
+		self.simstate_heat_        = simstate_heat
+		self.simstate_ambientheat_ = simstate_ambientheat
+		self.simstate_newtonian_   = simstate_newtonian
+		self.simstate_watereq_     = simstate_watereq
+		self.simstate_gravmode_    = simstate_gravmode
+		self.simstate_airmode_     = simstate_airmode
+		self.simstate_edgemode_    = simstate_edgemode
+		self.simstate_convmode_    = simstate_convmode
+		self.simstate_prettypowd_  = simstate_prettypowd
+		self.simstate_ambairtemp_  = simstate_ambairtemp
+		self.simstate_ambairpres_  = simstate_ambairpres
+		self.simstate_vortcoeff_   = simstate_vortcoeff
+		self.simstate_cgravx_      = simstate_cgravx
+		self.simstate_cgravy_      = simstate_cgravy
+		self.simstate_aairvx_      = simstate_aairvx
+		self.simstate_aairvy_      = simstate_aairvy
 		return true
 	end
 	return false
@@ -3641,9 +3720,9 @@ function profile_i:end_placesave_size_()
 		}
 	else
 		return math.max((lx - 2) * 4, 0),
-		       math.max((ly - 2) * 4, 0),
-		       math.min((hx + 2) * 4, sim.XRES) - 1,
-		       math.min((hy + 2) * 4, sim.YRES) - 1
+			   math.max((ly - 2) * 4, 0),
+			   math.min((hx + 2) * 4, sim.XRES) - 1,
+			   math.min((hy + 2) * 4, sim.YRES) - 1
 	end
 end
 
@@ -3691,8 +3770,8 @@ function profile_i:handle_tick()
 	if self.prev_select_mode_ ~= complete_select_mode then
 		self.prev_select_mode_ = complete_select_mode
 		if self.select_x_ and (self.select_mode_ == "copy" or
-		                       self.select_mode_ == "cut" or
-		                       self.select_mode_ == "stamp") then
+							   self.select_mode_ == "cut" or
+							   self.select_mode_ == "stamp") then
 			if self.select_mode_ == "copy" then
 				self:report_selectstatus_(1, self.select_x_, self.select_y_)
 			elseif self.select_mode_ == "cut" then
@@ -5259,32 +5338,43 @@ local function fnv1a32(data)
 	return hash < 0 and (hash + 0x100000000) or hash
 end
 
-local function ambient_air_temp(temp)
-	if temp then
-		local set = temp / 0x400
-		sim.ambientAirTemp(set)
-		return set
-	else
-		return math.max(0x000000, math.min(0xFFFFFF, math.floor(sim.ambientAirTemp() * 0x400)))
+local function bias_by_10(func)
+	return function(value)
+		if value then
+			local set = value / 0x400
+			func(set)
+			return set
+		else
+			return math.max(0x000000, math.min(0xFFFFFF, math.floor(func() * 0x400)))
+		end
 	end
 end
 
-local function custom_gravity(x, y)
-	if x then
-		if x >= 0x800000 then x = x - 0x1000000 end
-		if y >= 0x800000 then y = y - 0x1000000 end
-		local setx, sety = x / 0x400, y / 0x400
-		sim.customGravity(setx, sety)
-		return setx, sety
-	else
-		local getx, gety = sim.customGravity()
-		getx = math.max(-0x800000, math.min(0x7FFFFF, math.floor(getx * 0x400)))
-		gety = math.max(-0x800000, math.min(0x7FFFFF, math.floor(gety * 0x400)))
-		if getx < 0 then getx = getx + 0x1000000 end
-		if gety < 0 then gety = gety + 0x1000000 end
-		return getx, gety
+local ambient_air_temp = bias_by_10(sim.ambientAirTemp)
+local ambient_air_pres = bias_by_10(sim.edgePressure  )
+local vorticity_coeff  = bias_by_10(sim.vorticityCoeff)
+
+local function bias_by_10_x2_neg(func)
+	return function(x, y)
+		if x then
+			if x >= 0x800000 then x = x - 0x1000000 end
+			if y >= 0x800000 then y = y - 0x1000000 end
+			local setx, sety = x / 0x400, y / 0x400
+			func(setx, sety)
+			return setx, sety
+		else
+			local getx, gety = func()
+			getx = math.max(-0x800000, math.min(0x7FFFFF, math.floor(getx * 0x400)))
+			gety = math.max(-0x800000, math.min(0x7FFFFF, math.floor(gety * 0x400)))
+			if getx < 0 then getx = getx + 0x1000000 end
+			if gety < 0 then gety = gety + 0x1000000 end
+			return getx, gety
+		end
 	end
 end
+
+local custom_gravity  = bias_by_10_x2_neg(sim.customGravity)
+local ambient_air_vel = bias_by_10_x2_neg(sim.edgeVelocity )
 
 local function get_save_id()
 	local id, hist = sim.getSaveID()
@@ -5332,16 +5422,16 @@ end
 
 local function deco_unpack(deco)
 	return bit.band(bit.rshift(deco, 24), 0xFF),
-	       bit.band(bit.rshift(deco, 16), 0xFF),
-	       bit.band(bit.rshift(deco,  8), 0xFF),
-	       bit.band(           deco     , 0xFF)
+		   bit.band(bit.rshift(deco, 16), 0xFF),
+		   bit.band(bit.rshift(deco,  8), 0xFF),
+		   bit.band(           deco     , 0xFF)
 end
 
 local function deco_pack(a, r, g, b)
 	return bit.bor(bit.lshift(a, 24),
-	               bit.lshift(r, 16),
-	               bit.lshift(g,  8),
-	                          b     )
+				   bit.lshift(r, 16),
+				   bit.lshift(g,  8),
+							  b     )
 end
 
 local function clamp(x, lo, hi)
@@ -5350,7 +5440,7 @@ end
 
 local function clamp_pos(x, y)
 	return clamp(x, 0, gfx.WIDTH  - 1),
-	       clamp(y, 0, gfx.HEIGHT - 1)
+		   clamp(y, 0, gfx.HEIGHT - 1)
 end
 
 return {
@@ -5375,7 +5465,10 @@ return {
 	escape_regex           = escape_regex,
 	fnv1a32                = fnv1a32,
 	ambient_air_temp       = ambient_air_temp,
+	ambient_air_pres       = ambient_air_pres,
+	vorticity_coeff        = vorticity_coeff,
 	custom_gravity         = custom_gravity,
+	ambient_air_vel        = ambient_air_vel,
 	get_save_id            = get_save_id,
 	version_less           = common_util.version_less,
 	version_equal          = common_util.version_equal,
@@ -6819,7 +6912,7 @@ return {
 	-- ***********************************************************************
 
 	-- * Protocol version, between 0 and 254. 255 is reserved for future use.
-	version = 37,
+	version = 38,
 
 	-- * Client-to-server message size limit, between 0 and 255, the latter
 	--   limit being imposted by the protocol.
@@ -6918,28 +7011,28 @@ return (function(...)
 		chunkname = nil
 	end
 	local lineinfo = {
-		{ mod_name = "tptmp.common.util", line = 6861, mod_lines = 29 },
-		{ mod_name = "tptmp.common.config", line = 6814, mod_lines = 43 },
-		{ mod_name = "tptmp.common.command_parser", line = 6667, mod_lines = 143 },
-		{ mod_name = "tptmp.common.buffer_list", line = 6577, mod_lines = 86 },
-		{ mod_name = "tptmp.client.window", line = 5396, mod_lines = 1177 },
-		{ mod_name = "tptmp.client.util", line = 4749, mod_lines = 643 },
-		{ mod_name = "tptmp.client.utf8", line = 4636, mod_lines = 109 },
-		{ mod_name = "tptmp.client.socket.web", line = 4543, mod_lines = 89 },
-		{ mod_name = "tptmp.client.socket.tcp", line = 4435, mod_lines = 104 },
-		{ mod_name = "tptmp.client.side_button", line = 4272, mod_lines = 159 },
-		{ mod_name = "tptmp.client.profile.vanilla", line = 2830, mod_lines = 1438 },
-		{ mod_name = "tptmp.client.profile.jacobs", line = 2797, mod_lines = 29 },
-		{ mod_name = "tptmp.client.profile", line = 2785, mod_lines = 8 },
-		{ mod_name = "tptmp.client.manager.null", line = 2723, mod_lines = 58 },
-		{ mod_name = "tptmp.client.manager.jacobs", line = 2689, mod_lines = 30 },
-		{ mod_name = "tptmp.client.manager", line = 2677, mod_lines = 8 },
-		{ mod_name = "tptmp.client.localcmd", line = 2301, mod_lines = 372 },
-		{ mod_name = "tptmp.client.format", line = 2269, mod_lines = 28 },
-		{ mod_name = "tptmp.client.config", line = 2090, mod_lines = 175 },
-		{ mod_name = "tptmp.client.colours", line = 2008, mod_lines = 78 },
-		{ mod_name = "tptmp.client.client", line = 492, mod_lines = 1512 },
-		{ mod_name = "tptmp.client", line = 8, mod_lines = 480 }
+		{ mod_name = "tptmp.common.util", line = 6954, mod_lines = 29 },
+		{ mod_name = "tptmp.common.config", line = 6907, mod_lines = 43 },
+		{ mod_name = "tptmp.common.command_parser", line = 6760, mod_lines = 143 },
+		{ mod_name = "tptmp.common.buffer_list", line = 6670, mod_lines = 86 },
+		{ mod_name = "tptmp.client.window", line = 5489, mod_lines = 1177 },
+		{ mod_name = "tptmp.client.util", line = 4828, mod_lines = 657 },
+		{ mod_name = "tptmp.client.utf8", line = 4715, mod_lines = 109 },
+		{ mod_name = "tptmp.client.socket.web", line = 4622, mod_lines = 89 },
+		{ mod_name = "tptmp.client.socket.tcp", line = 4514, mod_lines = 104 },
+		{ mod_name = "tptmp.client.side_button", line = 4351, mod_lines = 159 },
+		{ mod_name = "tptmp.client.profile.vanilla", line = 2877, mod_lines = 1470 },
+		{ mod_name = "tptmp.client.profile.jacobs", line = 2844, mod_lines = 29 },
+		{ mod_name = "tptmp.client.profile", line = 2832, mod_lines = 8 },
+		{ mod_name = "tptmp.client.manager.null", line = 2770, mod_lines = 58 },
+		{ mod_name = "tptmp.client.manager.jacobs", line = 2736, mod_lines = 30 },
+		{ mod_name = "tptmp.client.manager", line = 2724, mod_lines = 8 },
+		{ mod_name = "tptmp.client.localcmd", line = 2348, mod_lines = 372 },
+		{ mod_name = "tptmp.client.format", line = 2316, mod_lines = 28 },
+		{ mod_name = "tptmp.client.config", line = 2137, mod_lines = 175 },
+		{ mod_name = "tptmp.client.colours", line = 2055, mod_lines = 78 },
+		{ mod_name = "tptmp.client.client", line = 488, mod_lines = 1563 },
+		{ mod_name = "tptmp.client", line = 8, mod_lines = 476 }
 	}
 	local function escape_regex(str)
 		return (str:gsub("[%$%%%(%)%*%+%-%.%?%]%[%^]", "%%%1"))

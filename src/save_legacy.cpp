@@ -130,8 +130,8 @@ int invalid_element(int save_as, int el)
 {
 	if (save_as > 0 && (el >= PT_NORMAL_NUM || el < 0 || globalSim->elements[el].Enabled == 0)) //Check for mod/disabled elements
 		return 1;
-	if (save_as > 1 && (el == PT_BASE || el == PT_SEED))
-		return 1;
+	//if (save_as > 1 && (el == PT_BASE || el == PT_SEED))
+	//	return 1;
 	return 0;
 }
 
@@ -514,7 +514,7 @@ pixel *prerender_save_OPS(void *save, int size, int *width, int *height)
 					}
 
 					// special rendering for some walls
-					if (wt==WL_EWALL)
+					if (wt == WL_EWALL || wt == WL_STASIS)
 					{
 						for (i=0; i<CELL; i++)
 							for (j=0; j<CELL; j++)
@@ -892,7 +892,7 @@ pixel *prerender_save_PSv(void *save, int size, int *width, int *height)
 			}
 
 			// special rendering for some walls
-			if (wt==WL_EWALL)
+			if (wt == WL_EWALL || wt == WL_STASIS)
 			{
 				for (i=0; i<CELL; i++)
 					for (j=0; j<CELL; j++)

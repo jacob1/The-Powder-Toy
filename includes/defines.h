@@ -29,24 +29,24 @@
 
 //VersionInfoStart
 #define SAVE_VERSION 100
-#define MINOR_VERSION 0
-#define BUILD_NUM 399
+#define MINOR_VERSION 1
+#define BUILD_NUM 400
 //VersionInfoEnd
 #define FAKE_SAVE_VERSION 100
-#define FAKE_MINOR_VER 0
+#define FAKE_MINOR_VER 1
 
 // Used in user agent to define the website api this version supports
 #define API_VERSION_MAJOR 97
 #define API_VERSION_MINOR 0 // always 0
 
-#define MOD_VERSION 59
-#define MOD_MINOR_VERSION 1
+#define MOD_VERSION 60
+#define MOD_MINOR_VERSION 0
 #define MOD_SAVE_VERSION 27 //This is not the version number of my mod anymore, it's only changed when I change the saving code
-#define MOD_BUILD_VERSION 173 //For update checks
+#define MOD_BUILD_VERSION 174 //For update checks
 
 #define MOBILE_MAJOR 1
-#define MOBILE_MINOR 22
-#define MOBILE_BUILD 129
+#define MOBILE_MINOR 24
+#define MOBILE_BUILD 132
 
 #define IDENT_VERSION "G" //Change this if you're not Simon! It should be a single letter
 

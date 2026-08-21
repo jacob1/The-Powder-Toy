@@ -1369,3 +1369,7 @@ Version 59.1 2026-06-29
 Officially update to 100.0, including the rest of the changes between the beta
 and release. Fix latest version of tptmp being unsupported. Update built-in
 script manager and tptmp.
+
+Version 60.0 2026-08-21
+Update to version 100.1. Update built-in tptmp. Fix stasis wall not showing in
+stamp previews.
