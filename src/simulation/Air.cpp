@@ -422,7 +422,7 @@ void Air::UpdateAir()
 				{
 					txf += stepX;
 					tyf += stepY;
-					if (!InCellBounds((int)(tyf+0.5f), (int)(txf+0.5f)) || blockair[(int)(tyf+0.5f)][(int)(txf+0.5f)])
+					if (!InCellBounds((int)(txf+0.5f), (int)(tyf+0.5f)) || blockair[(int)(tyf+0.5f)][(int)(txf+0.5f)])
 					{
 						txf -= stepX;
 						tyf -= stepY;
